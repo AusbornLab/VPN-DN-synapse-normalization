@@ -17,3 +17,4 @@ General flow of modeling pipeline:
 
 
 Note: Direct simulation data has been ommitted, however available upon request.
+Note: In the synDepolPlotter.py, functions will need to be adjusted to use the appropriate simulation data generated from the individual simulations (synActivation.py)
