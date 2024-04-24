@@ -14,3 +14,6 @@ General flow of modeling pipeline:
 6. Obtain ephys data  --------> Process in matlab (ephysReaderScript.m) --------> optimize passive properties (passivePropVisualizer.py)
 7. Activate synapses (synActivation.py)
 8. Visualize/Analyze/Plot synapse activation data (synDepolPlotter.py) 
+
+
+Note: Direct simulation data has been ommitted, however available upon request.
