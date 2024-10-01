@@ -459,7 +459,7 @@ def plotMorphColorCode_wSIZ(allSections_py, somaSection, axonList, tetherList, d
 
 def main():
     hasElectrode=True
-    neuron_name = "DNp03"
+    neuron_name = "DNp01"
     Tk().withdraw()
     fd_title = "Select morphology file to use for synapse mapping"
     morph_file = fd.askopenfilename(filetypes=[("swc file", "*.swc"), ("hoc file","*.hoc")], initialdir=r"morphologyData", title=fd_title)
@@ -563,7 +563,7 @@ def main():
     ax_decay = fig_DR.add_subplot(gs[1, :])
     ax_recov = fig_DR.add_subplot(gs[2, :])
     if neuron_name == "DNp01":
-        plt.plot(tInj_np_hpol_justDecay, aInjVec_np_hpol_current)
+        # plt.plot(tInj_np_hpol_justDecay, aInjVec_np_hpol_current)
         ax_full.plot(DNp01_fly1thru6_60pA_hpol_noHold_timeArray, DNp01_fly1thru6_60pA_hpol_noHold_voltageArray)
         ax_full.plot((tInj_np_hpol_justDecay/1000)+9.9, eInj_np_hpol_justDecay)
         ax_full.plot((tInj_np_hpol_justDecay/1000)+9.9, vInj_np_hpol_justDecay)
@@ -574,7 +574,7 @@ def main():
         ax_recov.plot((tInj_np_hpol_justDecay/1000)+9.9, eInj_np_hpol_justDecay)
         ax_recov.plot((tInj_np_hpol_justDecay/1000)+9.9, vInj_np_hpol_justDecay)
     elif neuron_name == "DNp03":
-        plt.plot(tInj_np_hpol_justDecay, aInjVec_np_hpol_current)
+        # plt.plot(tInj_np_hpol_justDecay, aInjVec_np_hpol_current)
         ax_full.plot(DNp03_fly4567_2pA_hpol_noHold_timeArray, DNp03_fly4567_2pA_hpol_noHold_voltageArray)
         ax_full.plot((tInj_np_hpol_justDecay/1000)+9.9, eInj_np_hpol_justDecay)
         ax_decay.plot(DNp03_fly4567_2pA_hpol_noHold_timeArray, DNp03_fly4567_2pA_hpol_noHold_voltageArray)
