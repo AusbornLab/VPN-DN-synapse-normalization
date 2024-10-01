@@ -4,10 +4,6 @@ import fafbseg # Version 3.0.10
 import cloudvolume as cv # Version 10.4.0
 from fafbseg import flywire
 
-print("skeletor version:", sk.__version__)
-print("trimesh version:", tm.__version__)
-print("fafbseg version:", fafbseg.__version__)
-print("cloudvolume version:", cv.__version__)
 
 ### Note for the code to work you will need access to the flywire dataset, which is accessible after training: 
 # The below commmand only needs to be done once, where you set your token, this creates a seperate cloudvolume file storing your token for future use. 
