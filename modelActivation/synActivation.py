@@ -1102,7 +1102,7 @@ def avg_dist_to_siz_per_VPN(neuron_name, sizSection, somaSection, synMap_df):
 
 
 def main():
-    neuron_name = "DNp03"
+    neuron_name = "DNp01"
 
     Tk().withdraw()
     fd_title = "Select morphology file to initialize"
@@ -1185,8 +1185,8 @@ def main():
     #activateRandomClose(neuron_name, erev, synMap_VPN_df, sizSection, somaSection, numSyn= 2, trials=50)
     for x in range(1, 25):
         activate_close_syns(neuron_name, erev, synMap_VPN_df, sizSection, somaSection, numSyn =x, trials=10)
-    for x in range(1, 25):
-        activate_random_syns(neuron_name, erev, synMap_VPN_df, sizSection, somaSection, numSyn =x, trials=10)
+    # for x in range(1, 25):
+    #     activate_random_syns(neuron_name, erev, synMap_VPN_df, sizSection, somaSection, numSyn =x, trials=10)
     ##################
     
 
