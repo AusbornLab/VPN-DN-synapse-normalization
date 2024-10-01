@@ -8,6 +8,8 @@ fafbseg version: 3.0.10
 cloudvolume version: 10.4.0
 numpy version: 1.23.5
 pandas version: 1.4.2
+neuron version : 8.2.0+
+tkinter version: 8.6.12
 
 R version: R version 4.2.0
 Packages:
