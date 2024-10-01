@@ -9,7 +9,7 @@ The packages and appropriate versions for each package is located in the package
 General flow of modeling pipeline:
 1. Generate skeleton model (skeletonization.py) and get synapse data (Obtaining_syns.py)
 2. Manually proofread skeleton models using Neutube (https://neutracing.com/) / Meshlab (https://www.meshlab.net/) 
-3. Map synapses to skeleton model for simulations (syn2morphMapper.py) / Map synapses for dendrograms (Mapping syn to nodes.R) ---------> (DNp0X_dendrogram.m)
+3. Map synapses to skeleton model for simulations (syn2morphMapper.py) / Map synapses for dendrograms (Install treestoolbox https://www.mathworks.com/matlabcentral/fileexchange/68886-trees-toolbox) (Mapping syn to nodes.R) ---------> (DNp0X_dendrogram.m)
 4. Generate Anatomical Receptive fields of VPN populations (LC_visual_field_startup.R) --------> (LC_Receptive_field.R)
 5. Visualization of synapses by receptive fields (Visualizing VPN by synapses by receptive fields.R)
 6. Obtain ephys data  --------> Process in matlab (ephysReaderScript.m) --------> optimize passive properties (passivePropVisualizer.py)
