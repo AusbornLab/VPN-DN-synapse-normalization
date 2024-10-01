@@ -6,6 +6,8 @@ skeletor version: 1.2.1
 trimesh version: 3.13.4
 fafbseg version: 3.0.10
 cloudvolume version: 10.4.0
+numpy version: 1.23.5
+pandas version: 1.4.2
 
 R version: R version 4.2.0
 Packages:
