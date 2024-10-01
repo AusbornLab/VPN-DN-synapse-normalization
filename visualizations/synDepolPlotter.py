@@ -5,11 +5,6 @@ import os
 from itertools import combinations
 import numpy
 from matplotlib import pyplot as plt
-from matplotlib import cm
-import matplotlib.cm as cms
-import matplotlib.colors as mcolors
-import matplotlib.patches as mpatches
-from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
 import matplotlib.gridspec as gridspec
 import math
@@ -17,13 +12,11 @@ import numpy as np
 import pandas as pd
 from tkinter import Tk
 import tkinter.filedialog as fd
-import seaborn as sns
 import random
 from scipy.stats import ttest_ind, shapiro, mannwhitneyu, linregress
 from scipy import stats
 from scipy.stats import ttest_1samp, levene
 from scikit_posthocs import posthoc_dunn
-from pingouin import read_dataset, ancova
 from matplotlib.patches import Rectangle
 from matplotlib.lines import Line2D
 
