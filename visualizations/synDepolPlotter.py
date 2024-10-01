@@ -110,7 +110,7 @@ def nsegDiscretization(sectionListToDiscretize):
 def initializeModel(neuron_name):
     Tk().withdraw()
     fd_title = "Select morphology file to initialize"
-    morph_file = fd.askopenfilename(filetypes=[("swc file", "*.swc"), ("hoc file","*.hoc")], initialdir=r"datafiles/morphologyData", title=fd_title)
+    morph_file = fd.askopenfilename(filetypes=[("swc file", "*.swc"), ("hoc file","*.hoc")], initialdir=r"/morphologyData", title=fd_title)
 
     cell = instantiate_swc(morph_file)
 
@@ -746,22 +746,22 @@ def boxplot_2d(x,y, ax, whis=1.5, color = None):
 
 def plotallsynsexp2syn(neuron_name):
     if neuron_name == "DNp01":
-        synSite_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synapse_sites.csv', dtype={'pre': str})
-        synCurr_siz_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synaptic_currents_siz.csv', header=None)
-        synCurr_soma_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synaptic_currents_soma.csv', header=None)
-        synCurr_synpt_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synaptic_currents_synpt.csv', header=None)
-        time_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_time.csv', header=None)
+        synSite_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synapse_sites.csv', dtype={'pre': str})
+        synCurr_siz_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synaptic_currents_siz.csv', header=None)
+        synCurr_soma_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synaptic_currents_soma.csv', header=None)
+        synCurr_synpt_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synaptic_currents_synpt.csv', header=None)
+        time_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_time.csv', header=None)
 
         TF, TF_AXLIST = plotTraces(time_df_exp2, synCurr_synpt_df_exp2, 'k', FIGURE=None, gridPos=[3, 0], axList=None)
         TF, TF_AXLIST = plotTraces(time_df_exp2, synCurr_siz_df_exp2, 'b', FIGURE=TF, gridPos=[3,1], axList=TF_AXLIST)
         TF, TF_AXLIST = plotTraces(time_df_exp2, synCurr_soma_df_exp2, 'g', FIGURE=TF, gridPos=[3,2], axList=TF_AXLIST)
 
     elif neuron_name == "DNp03":
-        synSite_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synapse_sites.csv', dtype={'pre': str})
-        synCurr_soma_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synaptic_currents_soma.csv', header=None)
-        synCurr_siz_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synaptic_currents_siz.csv', header=None)
-        synCurr_synpt_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synaptic_currents_synpt.csv', header=None)
-        time_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_time.csv', header=None)
+        synSite_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synapse_sites.csv', dtype={'pre': str})
+        synCurr_soma_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synaptic_currents_soma.csv', header=None)
+        synCurr_siz_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synaptic_currents_siz.csv', header=None)
+        synCurr_synpt_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synaptic_currents_synpt.csv', header=None)
+        time_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_time.csv', header=None)
 
         TF, TF_AXLIST = plotTraces(time_df_exp2, synCurr_synpt_df_exp2, 'k', FIGURE=None, gridPos=[3, 0], axList=None)
         TF, TF_AXLIST = plotTraces(time_df_exp2, synCurr_siz_df_exp2, 'b', FIGURE=TF, gridPos=[3,1], axList=TF_AXLIST)
@@ -796,11 +796,11 @@ def plotallsynsexp2syn(neuron_name):
 
 def plotallsynsexp2syn_by_type(neuron_name):
     if neuron_name == "DNp01":
-        synSite_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synapse_sites.csv', dtype={'pre': str})
-        synCurr_siz_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synaptic_currents_siz.csv', header=None)
-        synCurr_soma_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synaptic_currents_soma.csv', header=None)
-        synCurr_synpt_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synaptic_currents_synpt.csv', header=None)
-        time_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_time.csv', header=None)
+        synSite_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synapse_sites.csv', dtype={'pre': str})
+        synCurr_siz_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synaptic_currents_siz.csv', header=None)
+        synCurr_soma_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synaptic_currents_soma.csv', header=None)
+        synCurr_synpt_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synaptic_currents_synpt.csv', header=None)
+        time_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_time.csv', header=None)
         
         TF, TF_AXLIST = plotTraces(time_df_exp2, synCurr_synpt_df_exp2, 'g', FIGURE=None, gridPos=[3, 0], axList=None)
         TF, TF_AXLIST = plotTraces(time_df_exp2[0:519], synCurr_siz_df_exp2[0:519], 'b', FIGURE=TF, gridPos=[3,1], axList=TF_AXLIST)
@@ -812,11 +812,11 @@ def plotallsynsexp2syn_by_type(neuron_name):
         TF_AXLIST[2].set_ylim([-66.42, -66.36])
 
     elif neuron_name == "DNp03":
-        synSite_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synapse_sites.csv', dtype={'pre': str})
-        synCurr_soma_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synaptic_currents_soma.csv', header=None)
-        synCurr_siz_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synaptic_currents_siz.csv', header=None)
-        synCurr_synpt_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synaptic_currents_synpt.csv', header=None)
-        time_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_time.csv', header=None)
+        synSite_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synapse_sites.csv', dtype={'pre': str})
+        synCurr_soma_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synaptic_currents_soma.csv', header=None)
+        synCurr_siz_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synaptic_currents_siz.csv', header=None)
+        synCurr_synpt_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synaptic_currents_synpt.csv', header=None)
+        time_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_time.csv', header=None)
 
         TF, TF_AXLIST = plotTraces(time_df_exp2, synCurr_synpt_df_exp2, 'k', FIGURE=None, gridPos=[3, 0], axList=None)
 
@@ -866,33 +866,16 @@ def plotAllSynsAndhighlightsynsFig9(neuron_name, erev):
     # erev= -66.6544
     erev = -66.4298 - 0.2
     if neuron_name == "DNp01":
-        synSite_df = pd.read_csv("datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synapse_sites.csv", dtype={'pre': str})
-        synCurr_siz_df = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synaptic_currents_siz.csv', header=None)
-        synCurr_synpt_df = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synaptic_currents_synpt.csv', header=None)
-        time_df = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_time.csv', header=None)
-        
-    elif neuron_name == "DNp02":
-        synSite_df = pd.read_csv('datafiles/simulationData/DNp02_allSynSingleAct3site_627/SINGLE_20230627-121417_synapse_sites.csv', dtype={'pre': str})
-        synCurr_siz_df = pd.read_csv('datafiles/simulationData/DNp02_allSynSingleAct3site_627/SINGLE_20230627-121417_synaptic_currents_siz.csv', header=None)
-        synCurr_synpt_df = pd.read_csv('datafiles/simulationData/DNp02_allSynSingleAct3site_627/SINGLE_20230627-121417_synaptic_currents_synpt.csv', header=None)
-        time_df = pd.read_csv('datafiles/simulationData/DNp02_allSynSingleAct3site_627/SINGLE_20230627-121417_time.csv', header=None)
+        synSite_df = pd.read_csv("datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synapse_sites.csv", dtype={'pre': str})
+        synCurr_siz_df = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synaptic_currents_siz.csv', header=None)
+        synCurr_synpt_df = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synaptic_currents_synpt.csv', header=None)
+        time_df = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_time.csv', header=None)
 
     elif neuron_name == "DNp03":
-        synSite_df = pd.read_csv("datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synapse_sites.csv", dtype={'pre': str})
-        synCurr_siz_df = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synaptic_currents_siz.csv', header=None)
-        synCurr_synpt_df = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synaptic_currents_synpt.csv', header=None)
-        time_df = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_time.csv', header=None)
-
-    elif neuron_name == "DNp04":
-        synSite_df = pd.read_csv('datafiles/simulationData/DNp04_allSynSingleAct3site_628/SINGLE_20230628-110139_synapse_sites.csv', dtype={'pre': str})
-        synCurr_siz_df = pd.read_csv('datafiles/simulationData/DNp04_allSynSingleAct3site_628/SINGLE_20230628-110139_synaptic_currents_siz.csv', header=None)
-        synCurr_synpt_df = pd.read_csv('datafiles/simulationData/DNp04_allSynSingleAct3site_628/SINGLE_20230628-110139_synaptic_currents_synpt.csv', header=None)
-        time_df = pd.read_csv('datafiles/simulationData/DNp04_allSynSingleAct3site_628/SINGLE_20230628-110139_time.csv', header=None)
-    elif neuron_name == "DNp06":
-        synSite_df = pd.read_csv('datafiles/simulationData/DNp06_allSynSingleAct3site_628/SINGLE_20230628-110158_synapse_sites.csv', dtype={'pre': str})
-        synCurr_siz_df = pd.read_csv('datafiles/simulationData/DNp06_allSynSingleAct3site_628/SINGLE_20230628-110158_synaptic_currents_siz.csv', header=None)
-        synCurr_synpt_df = pd.read_csv('datafiles/simulationData/DNp06_allSynSingleAct3site_628/SINGLE_20230628-110158_synaptic_currents_synpt.csv', header=None)
-        time_df = pd.read_csv('datafiles/simulationData/DNp06_allSynSingleAct3site_628/SINGLE_20230628-110158_time.csv', header=None)
+        synSite_df = pd.read_csv("datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synapse_sites.csv", dtype={'pre': str})
+        synCurr_siz_df = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synaptic_currents_siz.csv', header=None)
+        synCurr_synpt_df = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synaptic_currents_synpt.csv', header=None)
+        time_df = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_time.csv', header=None)
         
     synSite_df, indexList = filterSynapsesToCriteria(['LC4','LC6', 'LC22', 'LPLC1','LPLC2', 'LPLC4'], synSite_df)
     i = 0
@@ -1081,17 +1064,17 @@ def plotAllSynsAndhighlightsynsFig9(neuron_name, erev):
 #Inset of Figure 9
 def plot_peak_depol_at_SIZ_vs_dist_to_SIZ(neuron_name, sizSection):
     if neuron_name == "DNp01":
-        synSite_df = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synapse_sites.csv', dtype={'pre': str})
-        synCurr_siz_df = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synaptic_currents_siz.csv', header=None)
-        synCurr_synpt_df= pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synaptic_currents_synpt.csv', header=None)
-        time_df = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_time.csv', header=None)
+        synSite_df = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synapse_sites.csv', dtype={'pre': str})
+        synCurr_siz_df = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synaptic_currents_siz.csv', header=None)
+        synCurr_synpt_df= pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synaptic_currents_synpt.csv', header=None)
+        time_df = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_time.csv', header=None)
 
     if neuron_name == "DNp03":
-        synSite_df = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synapse_sites.csv', dtype={'pre': str})
-        synCurr_soma__df = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synaptic_currents_soma.csv', header=None)
-        synCurr_siz_df = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synaptic_currents_siz.csv', header=None)
-        synCurr_synpt_df = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synaptic_currents_synpt.csv', header=None)
-        time_df = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_time.csv', header=None)
+        synSite_df = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synapse_sites.csv', dtype={'pre': str})
+        synCurr_soma__df = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synaptic_currents_soma.csv', header=None)
+        synCurr_siz_df = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synaptic_currents_siz.csv', header=None)
+        synCurr_synpt_df = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synaptic_currents_synpt.csv', header=None)
+        time_df = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_time.csv', header=None)
     gs_fig = gridspec.GridSpec(2, 2)
     TEST_IND = plt.figure()
     ax1_fig = TEST_IND.add_subplot(gs_fig[0, :])
@@ -1136,9 +1119,9 @@ def plot_peak_depol_at_SIZ_vs_dist_to_SIZ(neuron_name, sizSection):
 #Figure 10
 def plot_partner_VPN_activations(neuron_name, MODE= 'all/'):
     if neuron_name == "DNp01":
-        dir_path = 'datafiles/simulationData/DNp01_final_sims_1113/rand_vs_partner/'+neuron_name+'_partner'
+        dir_path = 'datafiles/simulationData/DNp01_final_sims/rand_vs_partner/'+neuron_name+'_partner'
     elif neuron_name == "DNp03":
-        dir_path = 'datafiles/simulationData/DNp03_final_sims_1113/rand_vs_partner/'+neuron_name+'_partner'
+        dir_path = 'datafiles/simulationData/DNp03_final_sims/rand_vs_partner/'+neuron_name+'_partner'
     quintList = returnQuints(dir_path)
     fig = plt.figure()
 
@@ -1223,9 +1206,9 @@ def plot_partner_VPN_activations(neuron_name, MODE= 'all/'):
 
 def plot_rand_vs_partner_SIZ(neuron_name, MODE='all/'):
     if neuron_name == "DNp01":
-        dir_path = 'datafiles/simulationData/DNp01_final_sims_1113/rand_vs_partner/'+neuron_name+'_partner'
+        dir_path = 'datafiles/simulationData/DNp01_final_sims/rand_vs_partner/'+neuron_name+'_partner'
     elif neuron_name == "DNp03":
-        dir_path = 'datafiles/simulationData/DNp03_final_sims_1113/rand_vs_partner/'+neuron_name+'_partner'
+        dir_path = 'datafiles/simulationData/DNp03_final_sims/rand_vs_partner/'+neuron_name+'_partner'
     
     quintList = returnQuints(dir_path)
     fig = plt.figure()
@@ -1299,9 +1282,9 @@ def plot_rand_vs_partner_SIZ(neuron_name, MODE='all/'):
             plt.plot(synct+JIT+0.25, peakV_siz-Vrest_siz, 'ks')
 
     if neuron_name == "DNp01":
-        dir_path = 'datafiles/simulationData/DNp01_final_sims_1113/rand_vs_partner/'+neuron_name+'_rand'
+        dir_path = 'datafiles/simulationData/DNp01_final_sims/rand_vs_partner/'+neuron_name+'_rand'
     if neuron_name == "DNp03":
-        dir_path = 'datafiles/simulationData/DNp03_final_sims_1113/rand_vs_partner/'+neuron_name+'_rand'
+        dir_path = 'datafiles/simulationData/DNp03_final_sims/rand_vs_partner/'+neuron_name+'_rand'
     quintList = returnQuints(dir_path)
     
     for quint_ct in range(len(quintList)):
@@ -1338,9 +1321,9 @@ def plot_rand_vs_partner_SIZ(neuron_name, MODE='all/'):
 
 def plot_rand_vs_partner_SOMA(neuron_name, MODE='all/'):
     if neuron_name == "DNp01":
-        dir_path = 'datafiles/simulationData/DNp01_final_sims_1113/rand_vs_partner/'+neuron_name+'_partner'
+        dir_path = 'datafiles/simulationData/DNp01_final_sims/rand_vs_partner/'+neuron_name+'_partner'
     elif neuron_name == "DNp03":
-        dir_path = 'datafiles/simulationData/DNp03_final_sims_1113/rand_vs_partner/'+neuron_name+'_partner'
+        dir_path = 'datafiles/simulationData/DNp03_final_sims/rand_vs_partner/'+neuron_name+'_partner'
     quintList = returnQuints(dir_path)
 
     fig = plt.figure()
@@ -1409,9 +1392,9 @@ def plot_rand_vs_partner_SOMA(neuron_name, MODE='all/'):
             plt.plot(synct+JIT+0.25, peakV_soma-Vrest_soma, 'ks')
 
     if neuron_name == "DNp01":
-        dir_path = 'datafiles/simulationData/DNp01_final_sims_1113/rand_vs_partner/'+neuron_name+'_rand'
+        dir_path = 'datafiles/simulationData/DNp01_final_sims/rand_vs_partner/'+neuron_name+'_rand'
     if neuron_name == "DNp03":
-        dir_path = 'datafiles/simulationData/DNp03_final_sims_1113/rand_vs_partner/'+neuron_name+'_rand'
+        dir_path = 'datafiles/simulationData/DNp03_final_sims/rand_vs_partner/'+neuron_name+'_rand'
     quintList = returnQuints(dir_path)
 
     Rand_0 = True
@@ -1447,7 +1430,7 @@ def plot_rand_vs_partner_SOMA(neuron_name, MODE='all/'):
 
 #Figure 11
 def Plot_DN_VPN_syns(neuron_name, erev, location = None):
-    dir_path_lin30VPN = 'datafiles/simulationData/'+neuron_name+'_incRandSynCt650_VPNnoJitter_FIX'
+    dir_path_lin30VPN = 'datafiles/simulationData/'+neuron_name+'_incRandSynCt_VPN'
 
     quintList_lin30VPN = returnQuints(dir_path_lin30VPN)
 
@@ -1492,18 +1475,6 @@ def Plot_DN_VPN_syns(neuron_name, erev, location = None):
         elif location == "Both":
              plt.plot(synct, peakV_soma-Vrest_soma, colorCode, marker='o')
              plt.plot(synct, peakV_siz-Vrest_siz, colorCode, marker='s')
-        # plt.plot(synct, peakV_soma-erev, 'go')#, FIGURE=lin250_fig)
-
-        # soma_fig.suptitle('soma fig')
-        # plt.title('Activation of 50 Random vs Close DNp06 Synapses (with Gaussian timing jitter | μ = 0 ms, σ = 0.5 ms)')
-        
-        # plt.legend(['Random synapses (SIZ)', 'Close synapses (SIZ)', 'Random synapses (Soma)', 'Close synapses (Soma)'])
-
-        # lin250_fig.set_size_inches(32, 18) # set figure's size manually to your full screen (32x18)
-        # siz_and_soma_fig.savefig('datafiles/figures/DNp06_randVclose_50syn/siz_and_soma_fig_trial'+str(quint_ct)+'.svg', bbox_inches='tight')
-
-        # syn_shape_window_close = plotSynapseLocations(quint_close[4], colorKey=4, syn_shape_window=None)
-        # syn_shape_window_close.printfile('datafiles/figures/DNp06_randVclose_50syn/synLocations_close_trial'+str(quint_ct)+'.cdr')
 
     plt.xlabel('Number of synapses activated')
     plt.ylabel('Voltage deflection from resting membrane potential (mV)')
@@ -1571,11 +1542,11 @@ def Plot_DNp03_VPN_syns_by_type(neuron_name, location = None, type = None):
 #Must run this first before running the below, and run partner and random seperately.
 def plot_syn_spread_vs_dist_to_siz_partner_vs_rand(neuron_name, erev, sizSection=None, plots = None):
     if plots == "Rand":
-        dir_path = 'datafiles/simulationData/'+neuron_name+'_final_sims_1113/rand_vs_partner/'+neuron_name+'_rand'
+        dir_path = 'datafiles/simulationData/'+neuron_name+'_final_sims/rand_vs_partner/'+neuron_name+'_rand'
         quintList = returnQuints(dir_path)
 
     elif plots =="Partner":
-        dir_path = 'datafiles/simulationData/'+neuron_name+'_final_sims_1113/rand_vs_partner/'+neuron_name+'_partner'
+        dir_path = 'datafiles/simulationData/'+neuron_name+'_final_sims/rand_vs_partner/'+neuron_name+'_partner'
         quintList = returnQuints(dir_path)
     
     fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(8, 15))
@@ -1968,9 +1939,9 @@ def plot_syn_spread_vs_dist_to_siz_from_csv_rand_vs_partner(neuron_name, synnum 
 
 def Peak_depol_per_VPN(neuron_name):
     if neuron_name == "DNp01":
-        dir_path = 'datafiles/simulationData/DNp01_final_sims_1113/rand_vs_partner/'+neuron_name+'_partner'
+        dir_path = 'datafiles/simulationData/DNp01_final_sims/rand_vs_partner/'+neuron_name+'_partner'
     elif neuron_name == "DNp03":
-        dir_path = 'datafiles/simulationData/DNp03_final_sims_1113/rand_vs_partner/'+neuron_name+'_partner'
+        dir_path = 'datafiles/simulationData/DNp03_final_sims/rand_vs_partner/'+neuron_name+'_partner'
     
     quintList = returnQuints(dir_path)
     data_list = []
@@ -1998,19 +1969,19 @@ def Peak_depol_per_VPN(neuron_name):
 
 def individual_syn_depol_per_VPN(neuron_name):
     if neuron_name == "DNp01":
-        synSite_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synapse_sites.csv', dtype={'pre': str})
-        synCurr_siz_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synaptic_currents_siz.csv', header=None)
-        synCurr_soma_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synaptic_currents_soma.csv', header=None)
-        synCurr_synpt_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_synaptic_currents_synpt.csv', header=None)
-        time_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp01/SINGLE_EXP2_20240214-181219_time.csv', header=None)
+        synSite_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synapse_sites.csv', dtype={'pre': str})
+        synCurr_siz_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims/ssinglesynactivation/SINGLE_EXP2_20240214-181219_synaptic_currents_siz.csv', header=None)
+        synCurr_soma_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synaptic_currents_soma.csv', header=None)
+        synCurr_synpt_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_synaptic_currents_synpt.csv', header=None)
+        time_df_exp2 = pd.read_csv('datafiles/simulationData/DNp01_final_sims/singlesynactivation/SINGLE_EXP2_20240214-181219_time.csv', header=None)
         result_list = []
     
     elif neuron_name == "DNp03":
-        synSite_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synapse_sites.csv', dtype={'pre': str})
-        synCurr_soma_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synaptic_currents_soma.csv', header=None)
-        synCurr_siz_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synaptic_currents_siz.csv', header=None)
-        synCurr_synpt_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_synaptic_currents_synpt.csv', header=None)
-        time_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims_1113/singleTEST/allSyn_synCon5pt5en5x4_DNp03/SINGLE_EXP2_20240214-123501_time.csv', header=None)
+        synSite_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synapse_sites.csv', dtype={'pre': str})
+        synCurr_soma_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synaptic_currents_soma.csv', header=None)
+        synCurr_siz_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synaptic_currents_siz.csv', header=None)
+        synCurr_synpt_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_synaptic_currents_synpt.csv', header=None)
+        time_df_exp2 = pd.read_csv('datafiles/simulationData/DNp03_final_sims/singlesynactivation/SINGLE_EXP2_20240214-123501_time.csv', header=None)
         result_list = []
 
     # Iterate through each row
@@ -2598,15 +2569,15 @@ def main():
     cell, allSections_py, allSections_nrn, somaSection, erev, axonList, tetherList, dendList, sizSection = initializeModel(neuron_name)#sizSection, erev, axonList = initializeModel(neuron_name)
 
     if neuron_name == "DNp01":
-        synSite_df = pd.read_csv('datafiles/morphologyData/DNp01_morphData/synMap_DNp01_021324.csv', dtype={'pre': str})
+        synSite_df = pd.read_csv('morphologyData/DNp01_morphData/synMap_DNp01_021324.csv', dtype={'pre': str})
     elif neuron_name == "DNp02":
-        synSite_df = pd.read_csv('datafiles/morphologyData/DNp02_morphData/synMap_DNp02_7623.csv', dtype={'pre': str}) 
+        synSite_df = pd.read_csv('morphologyData/DNp02_morphData/synMap_DNp02_7623.csv', dtype={'pre': str}) 
     elif neuron_name == "DNp03":
-        synSite_df = pd.read_csv('datafiles/morphologyData/DNp03_morphData/synMap_DNp03_021324.csv', dtype={'pre': str})    
+        synSite_df = pd.read_csv('morphologyData/DNp03_morphData/synMap_DNp03_021324.csv', dtype={'pre': str})    
     elif neuron_name == "DNp04":
-        synSite_df = pd.read_csv('datafiles/morphologyData/DNp04_morphData/synMap_DNp04_7623.csv', dtype={'pre': str})    
+        synSite_df = pd.read_csv('morphologyData/DNp04_morphData/synMap_DNp04_7623.csv', dtype={'pre': str})    
     elif neuron_name == "DNp06":
-        synSite_df = pd.read_csv('datafiles/morphologyData/DNp06_morphData/synMap_DNp06_7623.csv', dtype={'pre': str})    
+        synSite_df = pd.read_csv('morphologyData/DNp06_morphData/synMap_DNp06_7623.csv', dtype={'pre': str})    
     synSite_df = removeAxonalSynapses(synSite_df, dendList, axonList=axonList, tetherList=tetherList, somaSection=somaSection, sizSection=sizSection)
     
 
