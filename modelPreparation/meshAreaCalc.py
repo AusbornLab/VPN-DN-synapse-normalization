@@ -1,10 +1,6 @@
 import trimesh
 import math
-import numpy
 from neuron import h, rxd
-from neuron.units import ms, mV
-import pandas as pd
-import time as clock
 import cmath
 
 h.load_file("stdrun.hoc")
@@ -26,7 +22,7 @@ def find_radius(height, surface_area_um):
 
 def meshItUp():
     pi = math.pi
-    # Load the mesh for the axons here
+    # Load the mesh for the axons here, reach out to (am4946@drexel.edu for axonal mesh data)
     mesh = trimesh.load("datafiles/morphologyData/Axon_meshes/648518346475217761.obj")
     
     print("mesh loaded")
