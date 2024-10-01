@@ -1,14 +1,7 @@
 from neuron import h, gui
 from neuron.units import ms, mV
 import time as clock
-import os
-import re
 import numpy
-from matplotlib import pyplot as plt
-from matplotlib import cm
-import matplotlib.gridspec as gridspec
-import math
-import csv
 import pandas as pd
 from tkinter import Tk
 import tkinter.filedialog as fd
@@ -139,46 +132,6 @@ def mapSynapses(outFilename=None, neuron_name = None):
         #the synSegRangeVar value is then appended to the holding list created earlier for this paramter
         synSegRangeVarCol.append(synSegRangeVar)
         
-        #collapsed below is debugging code used to generate plots that can be used to validate the synSegRangeVar calculation method
-        '''
-        '''
-        #below line is deprecated + incorrect method for calculating synSegRanegVar - it is kept for posterity and for relevance in debugging code
-        #synSegRangeVarOLD = synToSecVecDist / numpy.linalg.norm(synSecDir)
-
-        # PT1_TEST = synSecStart + synSegRangeVarOLD*(synSecEnd - synSecStart)
-        # PT2_TEST = synSecStart + synSegRangeVar*(synSecEnd - synSecStart)
-
-        # P1_squared_dist = numpy.sum((PT1_TEST-synCoords)**2, axis=0)
-        # P2_squared_dist = numpy.sum((PT2_TEST-synCoords)**2, axis=0)
-        # PT1_dist = numpy.sqrt(P1_squared_dist)
-        # PT2_dist = numpy.sqrt(P2_squared_dist)
-        # if PT2_dist > PT1_dist:
-        #     print('CRITICAL ERROR')
-        #     clock.sleep(10000)
-        # print("P1 DIST:", PT1_dist, "| P2 DIST", PT2_dist)
-        
-
-        #print(synSegRangeVarOLD, synSegRangeVar)
-        #print("\n")
-
-        # PROJECTION = numpy.dot(synToSecVec, synSecDir) / numpy.dot(synSecDir, synSecDir) * synSecDir
-        # PROJ_PT = synSecStart + PROJECTION
-        #print(PROJECTION)
-        # fig = plt.figure()
-        # ax = fig.add_subplot(projection='3d')
-
-        # # Plot the line
-        # ax.plot([synSecStart[0], synSecEnd[0]], [synSecStart[1], synSecEnd[1]], [synSecStart[2], synSecEnd[2]], color='blue')
-        # # ax.plot([synSecStart[0], synSecEnd[0]], [synSecStart[1], synSecEnd[1]], [synSecStart[2], synSecEnd[2]], color='blue')
-        # ax.scatter(synCoords[0], synCoords[1], synCoords[2], color='red', label='Point')
-        # ax.scatter(synClosestSecPt[0], synClosestSecPt[1], synClosestSecPt[2], color='green', s=400, label='Closest Point')
-        # ax.scatter(PROJ_PT[0], PROJ_PT[1], PROJ_PT[2], color='yellow', s=200, label='PROJ PT')
-        # ax.scatter(PT1_TEST[0], PT1_TEST[1], PT1_TEST[2], color='magenta', label='PROJ PT 1')
-        # ax.scatter(PT2_TEST[0], PT2_TEST[1], PT2_TEST[2], color='cyan', label='PROJ PT 2')
-        
-        # plt.show()
-        '''
-        '''
 
         #progress print statement that reports how many synapses have been mapped and calculates what % of synapses still need to be mapped to the morphology 
         print("{}/{} synapses mapped | mapping {}% done".format(str(synIndex+1), str(len(synData_df)+1), str(round((synIndex+1)/(len(synData_df)+1)*100, 2))))
@@ -193,13 +146,9 @@ def mapSynapses(outFilename=None, neuron_name = None):
     #once all synapses have been assigned to a section and have been assigned a range varaible along that section, all the data is stored in two new columns that are added to the synData dataframe
     synData_df = synData_df.assign(mappedSection=synSecCol)
     synData_df = synData_df.assign(mappedSegRangeVar=synSegRangeVarCol)
-    #print(synData_df.head())
+    
 
     #the synData dataframe is then written to a csv where it is either saved with the datetime if no file name is given, or under the given filename if one is provided
-    #TODO: check OS compatability (works on ubuntu)
-    #TODO: check for blanks/errs (see synActivation.py row/col drops) and remove
-    #TODO: add syn to soma or syn to siz (?)
-    #AT END REMOVE COLS OUTSIDE LIST AND CHECK FOR NAN
     if outFilename is not None:
         if neuron_name is not None:
             outFilename = "datafiles/morphologyData/" + neuron_name + "_morphData/" + outFilename
@@ -213,8 +162,6 @@ def mapSynapses(outFilename=None, neuron_name = None):
         else:
             outFilename = "datafiles/morphologyData/" + neuron_name + "_morphData/" + "synMap" + datetime
         synData_df.to_csv(outFilename, index=False)
-    # print(synData_df.head())
-    # print(synData_df.dtypes)
 
 def instantiate_swc(filename):
     ''' 
