@@ -4,11 +4,7 @@ navis.patch_cloudvolume()
 from fafbseg import flywire
 import fafbseg
 import pandas as pd
-from mpl_toolkits import mplot3d
-import numpy as np
-import xlsxwriter
-import csv
-import matplotlib.pyplot as plt
+
 
 #The following example goes through DNp01, bnut changing the ID 
 DNp01 = 720575940622838154
@@ -17,8 +13,8 @@ DNp03 = 720575940627645514
 DNp04 = 720575940604954289
 DNp06 = 720575940625577451
 
-DN_syn = flywire.fetch_synapses(DNp01,pre = False, min_score = 30)
-DN_conn = fafbseg.flywire.synapses.fetch_connectivity(DNp01, downstream = False, min_score = 30)
+DN_syn = flywire.get_synapses(DNp01,pre = False, min_score = 30)
+DN_conn = fafbseg.flywire.synapses.get_connectivity(DNp01, downstream = False, min_score = 30)
 
 # 54 LC4 ids
 # 62 LC6 ids
