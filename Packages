@@ -2,7 +2,10 @@ The following packages are versions are necessary to run the provide scripts:
 
 Python version: Python 3.10.5
 Packages:
-
+skeletor version: 1.2.1
+trimesh version: 3.13.4
+fafbseg version: 3.0.10
+cloudvolume version: 10.4.0
 
 R version: R version 4.2.0
 Packages:
