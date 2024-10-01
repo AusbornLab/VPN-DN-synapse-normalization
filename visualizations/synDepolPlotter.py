@@ -2306,17 +2306,17 @@ def NN_COM_merge(VPN, nearest_neighbor_df, dist_df, neuron_pair_dist):
     neuron_syn_pair_dists = neuron_pair_dist
 
     if VPN == "LC4":
-        VPN_COM = pd.read_excel("C:/Users/antho/Documents/VPN_DN_synapses/LC4_receptivefield_COM.xlsx", dtype={'updated_ids': str})
+        VPN_COM = pd.read_excel("datafiles/Receptive_field_files/LC4_receptivefield_COM.xlsx", dtype={'updated_ids': str})
     elif VPN == "LC6":
-        VPN_COM = pd.read_excel("C:/Users/antho/Documents/VPN_DN_synapses/LC6_receptivefield_COM.xlsx", dtype={'updated_ids': str})
+        VPN_COM = pd.read_excel("datafiles/Receptive_field_files/LC6_receptivefield_COM.xlsx", dtype={'updated_ids': str})
     elif VPN == "LC22":
-        VPN_COM = pd.read_excel("C:/Users/antho/Documents/VPN_DN_synapses/LC22_receptivefield_COM.xlsx", dtype={'updated_ids': str})
+        VPN_COM = pd.read_excel("datafiles/Receptive_field_files/LC22_receptivefield_COM.xlsx", dtype={'updated_ids': str})
     elif VPN == "LPLC1":
-        VPN_COM = pd.read_excel("C:/Users/antho/Documents/VPN_DN_synapses/LPLC1_receptivefield_COM.xlsx", dtype={'updated_ids': str})
+        VPN_COM = pd.read_excel("datafiles/Receptive_field_files/LPLC1_receptivefield_COM.xlsx", dtype={'updated_ids': str})
     elif VPN == "LPLC2":
-        VPN_COM = pd.read_excel("C:/Users/antho/Documents/VPN_DN_synapses/LPLC2_receptivefield_COM.xlsx", dtype={'updated_ids': str})
+        VPN_COM = pd.read_excel("datafiles/Receptive_field_files/LPLC2_receptivefield_COM.xlsx", dtype={'updated_ids': str})
     elif VPN == "LPLC4":
-        VPN_COM = pd.read_excel("C:/Users/antho/Documents/VPN_DN_synapses/LPLC4_receptivefield_COM.xlsx", dtype={'updated_ids': str})
+        VPN_COM = pd.read_excel("datafiles/Receptive_field_files/LPLC4_receptivefield_COM.xlsx", dtype={'updated_ids': str})
     else:
         raise ValueError("Invalid VPN value")
     # load COM data frame with 'updated_ids' as strs
@@ -2488,17 +2488,17 @@ def plot_retinotopy(neuron_syn_pair_dists, VPN, neuron_name):
 
 def COM_receptive_field_split_and_visualization(VPN):
     if VPN == "LC4":
-        VPN_COM = pd.read_excel("C:/Users/antho/Documents/VPN_DN_synapses/LC4_receptivefield_COM.xlsx", dtype={'updated_ids': str})
+        VPN_COM = pd.read_excel("datafiles/Receptive_field_files/LC4_receptivefield_COM.xlsx", dtype={'updated_ids': str})
     elif VPN == "LC6":
-        VPN_COM = pd.read_excel("C:/Users/antho/Documents/VPN_DN_synapses/LC6_receptivefield_COM.xlsx", dtype={'updated_ids': str})
+        VPN_COM = pd.read_excel("datafiles/Receptive_field_files/LC6_receptivefield_COM.xlsx", dtype={'updated_ids': str})
     elif VPN == "LC22":
-        VPN_COM = pd.read_excel("C:/Users/antho/Documents/VPN_DN_synapses/LC22_receptivefield_COM.xlsx", dtype={'updated_ids': str})
+        VPN_COM = pd.read_excel("datafiles/Receptive_field_files/LC22_receptivefield_COM.xlsx", dtype={'updated_ids': str})
     elif VPN == "LPLC1":
-        VPN_COM = pd.read_excel("C:/Users/antho/Documents/VPN_DN_synapses/LPLC1_receptivefield_COM.xlsx", dtype={'updated_ids': str})
+        VPN_COM = pd.read_excel("datafiles/Receptive_field_files/LPLC1_receptivefield_COM.xlsx", dtype={'updated_ids': str})
     elif VPN == "LPLC2":
-        VPN_COM = pd.read_excel("C:/Users/antho/Documents/VPN_DN_synapses/LPLC2_receptivefield_COM.xlsx", dtype={'updated_ids': str})
+        VPN_COM = pd.read_excel("datafiles/Receptive_field_files/LPLC2_receptivefield_COM.xlsx", dtype={'updated_ids': str})
     elif VPN == "LPLC4":
-        VPN_COM = pd.read_excel("C:/Users/antho/Documents/VPN_DN_synapses/LPLC4_receptivefield_COM.xlsx", dtype={'updated_ids': str})
+        VPN_COM = pd.read_excel("datafiles/Receptive_field_files/LPLC4_receptivefield_COM.xlsx", dtype={'updated_ids': str})
     else:
         raise ValueError("Invalid VPN value")
     ventral = VPN_COM[VPN_COM['DV_norm'] > 0.5]['DV_norm'].count()
