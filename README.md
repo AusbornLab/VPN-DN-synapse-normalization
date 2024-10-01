@@ -1,6 +1,6 @@
 # VPN-DN-synapse-normalization
 
-This repository accompanys "Morphology and synapse topography optimize linear encoding of synapse numbers in Drosophila looming responsive descending neurons." (INSERT DOI HERE)
+This repository accompanys "Morphology and synapse topography optimize linear encoding of synapse numbers in Drosophila looming responsive descending neurons." (doi: 10.1101/2024.04.24.591016.)
 
 It contains all code necessary for the modeling pipeline, skeletonizing DNs, modeling their synaptic activations, mapping receptive fields of VPNs, and investigating retinotopy. 
 
