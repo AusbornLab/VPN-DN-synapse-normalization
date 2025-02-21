@@ -5,7 +5,7 @@ clear all
 close all
 clear
 %% load data fly1-6 hpol
-folder = 'C:\Users\Sasha\Research\EphysDataPrep\DNp01 current injection 07-18-2023 upload\60 pA hyperpolarization or depolarization applied\1st';
+folder = 'C:\Users\antho\VPN-DN-synapse-normalization\Matlab code';
 filename = 'fly01_DNp01_hyperpolarization current injection 60pA_with 20sec interval.mat';
 File = fullfile(folder, filename);
 load(File)
@@ -22,7 +22,7 @@ t_hpol = t_hpol./20000;
 t_hpol = t_hpol';
 
 
-folder = 'C:\Users\Sasha\Research\EphysDataPrep\DNp01 current injection 07-18-2023 upload\60 pA hyperpolarization or depolarization applied\2nd';
+folder = 'C:\Users\antho\VPN-DN-synapse-normalization\Matlab code';
 filename = 'fly02_DNp01_hyperpolarization current injection 60pA_with 20sec interval.mat';File = fullfile(folder, filename);
 load(File)
 fly2_hpol_responsePlots = [response_plot01, response_plot02, response_plot03,...
@@ -33,7 +33,7 @@ fly2_hpol_responsePlots = [response_plot01, response_plot02, response_plot03,...
     response_plot16, response_plot17, response_plot18,...
     response_plot19, response_plot20];
 
-folder = 'C:\Users\Sasha\Research\EphysDataPrep\DNp01 current injection 07-18-2023 upload\60 pA hyperpolarization or depolarization applied\3rd';
+folder = 'C:\Users\antho\VPN-DN-synapse-normalization\Matlab code';
 filename = 'fly03_DNp01_hyperpolarization current injection 60pA_with 20sec interval.mat';
 File = fullfile(folder, filename);
 load(File)
@@ -45,53 +45,54 @@ fly3_hpol_responsePlots = [response_plot01, response_plot02, response_plot03,...
     response_plot16, response_plot17, response_plot18,...
     response_plot19, response_plot20];
 
-folder = 'C:\Users\Sasha\Research\EphysDataPrep\DNp01 current injection 07-28-2023 upload\60 pA hyperpolarization or depolarization applied\4th';
-filename = 'fly04_DNp01_hyperpolarization current injection 60pA_300ms_duration_with 5sec interval.mat';
-File = fullfile(folder, filename);
-load(File)
-fly4_hpol_responsePlots = [response_plot01, response_plot02, response_plot03,...
-    response_plot04, response_plot05, response_plot06,...
-    response_plot07, response_plot08, response_plot09,...
-    response_plot10, response_plot11, response_plot12,...
-    response_plot13, response_plot14, response_plot15,...
-    response_plot16, response_plot17, response_plot18,...
-    response_plot19, response_plot20];
-
-folder = 'C:\Users\Sasha\Research\EphysDataPrep\DNp01 current injection 07-28-2023 upload\60 pA hyperpolarization or depolarization applied\5th';
-filename = 'fly05_DNp01_hyperpolarization current injection 60pA_300ms_duration_with 5sec interval.mat';
-File = fullfile(folder, filename);
-load(File)
-fly5_hpol_responsePlots = [response_plot01, response_plot02, response_plot03,...
-    response_plot04, response_plot05, response_plot06,...
-    response_plot07, response_plot08, response_plot09,...
-    response_plot10, response_plot11, response_plot12,...
-    response_plot13, response_plot14, response_plot15,...
-    response_plot16, response_plot17, response_plot18,...
-    response_plot19, response_plot20];
-
-folder = 'C:\Users\Sasha\Research\EphysDataPrep\DNp01 current injection 08-03-2023 upload\60 pA hyperpolarization or depolarization applied\6th';
-filename = 'fly06_DNp01_hyperpolarization current injection 60pA_300ms_duration_with 5sec interval.mat';
-File = fullfile(folder, filename);
-load(File)
-fly6_hpol_responsePlots = [response_plot01, response_plot02, response_plot03,...
-    response_plot04, response_plot05, response_plot06,...
-    response_plot07, response_plot08, response_plot09,...
-    response_plot10, response_plot11, response_plot12,...
-    response_plot13, response_plot14, response_plot15,...
-    response_plot16, response_plot17, response_plot18,...
-    response_plot19, response_plot20];
+% folder = 'C:\Users\antho\VPN-DN-synapse-normalization\Matlab code';
+% filename = 'fly04_DNp01_hyperpolarization current injection 60pA_300ms_duration_with 5sec interval.mat';
+% File = fullfile(folder, filename);
+% load(File)
+% fly4_hpol_responsePlots = [response_plot01, response_plot02, response_plot03,...
+%     response_plot04, response_plot05, response_plot06,...
+%     response_plot07, response_plot08, response_plot09,...
+%     response_plot10, response_plot11, response_plot12,...
+%     response_plot13, response_plot14, response_plot15,...
+%     response_plot16, response_plot17, response_plot18,...
+%     response_plot19, response_plot20];
+% 
+% folder = 'C:\Users\Sasha\Research\EphysDataPrep\DNp01 current injection 07-28-2023 upload\60 pA hyperpolarization or depolarization applied\5th';
+% filename = 'fly05_DNp01_hyperpolarization current injection 60pA_300ms_duration_with 5sec interval.mat';
+% File = fullfile(folder, filename);
+% load(File)
+% fly5_hpol_responsePlots = [response_plot01, response_plot02, response_plot03,...
+%     response_plot04, response_plot05, response_plot06,...
+%     response_plot07, response_plot08, response_plot09,...
+%     response_plot10, response_plot11, response_plot12,...
+%     response_plot13, response_plot14, response_plot15,...
+%     response_plot16, response_plot17, response_plot18,...
+%     response_plot19, response_plot20];
+% 
+% folder = 'C:\Users\Sasha\Research\EphysDataPrep\DNp01 current injection 08-03-2023 upload\60 pA hyperpolarization or depolarization applied\6th';
+% filename = 'fly06_DNp01_hyperpolarization current injection 60pA_300ms_duration_with 5sec interval.mat';
+% File = fullfile(folder, filename);
+% load(File)
+% fly6_hpol_responsePlots = [response_plot01, response_plot02, response_plot03,...
+%     response_plot04, response_plot05, response_plot06,...
+%     response_plot07, response_plot08, response_plot09,...
+%     response_plot10, response_plot11, response_plot12,...
+%     response_plot13, response_plot14, response_plot15,...
+%     response_plot16, response_plot17, response_plot18,...
+%     response_plot19, response_plot20];
 
 t_hpol_300 = 0:numel(response_plot01)-1;
 t_hpol_300 = t_hpol_300./20000;
 t_hpol_300 = t_hpol_300';
 
+
 %% make average traces
 fly1_hpol_avg = returnAvgTrace(fly1_hpol_responsePlots);
 fly2_hpol_avg = returnAvgTrace(fly2_hpol_responsePlots);
 fly3_hpol_avg = returnAvgTrace(fly3_hpol_responsePlots);
-fly4_hpol_avg = returnAvgTrace(fly4_hpol_responsePlots);
-fly5_hpol_avg = returnAvgTrace(fly5_hpol_responsePlots);
-fly6_hpol_avg = returnAvgTrace(fly6_hpol_responsePlots);
+% fly4_hpol_avg = returnAvgTrace(fly4_hpol_responsePlots);
+% fly5_hpol_avg = returnAvgTrace(fly5_hpol_responsePlots);
+% fly6_hpol_avg = returnAvgTrace(fly6_hpol_responsePlots);
 
 % fly_45_72823_300ms = returnAvgTrace([fly4_72823_hpol_avg, fly5_72823_hpol_avg]);
 
@@ -103,6 +104,7 @@ figure(1);
 
 time = t_hpol;
 time_300ms = t_hpol_300;
+colorGrey = [0.7, 0.7, 0.7];
 
 subplot(3, 1, 1)
 %note the subtraction of 7.5 seconds to facilitate alignment with the
@@ -117,10 +119,10 @@ title("Fly 1-3 (longer inj)")
 
 subplot(3, 1, 2)
 
-plot(time_300ms, fly4_hpol_avg, 'b')
-hold on
-plot(time_300ms, fly5_hpol_avg, 'b')
-plot(time_300ms, fly6_hpol_avg, 'b')
+% plot(time_300ms, fly4_hpol_avg, 'b')
+% hold on
+% plot(time_300ms, fly5_hpol_avg, 'b')
+% plot(time_300ms, fly6_hpol_avg, 'b')
 ylabel('mV')
 xlabel('sec')
 title("Fly 4-6 (shorter inj)")
@@ -128,16 +130,45 @@ title("Fly 4-6 (shorter inj)")
 subplot(3, 1, 3)
 plot(time-7.5, fly1_hpol_avg, 'r')
 hold on
-plot(time-7.5, fly2_hpol_avg, 'r')
-plot(time-7.5, fly3_hpol_avg, 'r')
-plot(time_300ms, fly4_hpol_avg, 'b')
-plot(time_300ms, fly5_hpol_avg, 'b')
-plot(time_300ms, fly6_hpol_avg, 'b')
+plot(time-7.5, fly2_hpol_avg, 'g')
+plot(time-7.5, fly3_hpol_avg, 'b')
+% plot(time_300ms, fly4_hpol_avg, 'b')
+% plot(time_300ms, fly5_hpol_avg, 'b')
+% plot(time_300ms, fly6_hpol_avg, 'b')
 ylabel('mV')
 xlabel('sec')
 title("Fly 1-6")
 
 sgtitle("Quick plot of traces")
+
+%% plot individual flies variability
+figure(2);
+plot(time-7.5, fly1_hpol_responsePlots,'Color', colorGrey)
+hold on
+plot(time-7.5, fly1_hpol_avg, 'r')
+xlabel('sec')
+ylabel('mV')
+xlim([2 4])
+title("Fly 1 (longer inj)")
+
+figure(3);
+plot(time-7.5, fly2_hpol_responsePlots, 'Color', colorGrey)
+hold on
+plot(time-7.5, fly2_hpol_avg, 'g')
+xlabel('sec')
+ylabel('mV')
+xlim([2 4])
+title("Fly 2 (longer inj)")
+
+figure(4);
+plot(time-7.5, fly3_hpol_responsePlots, 'Color', colorGrey)
+hold on
+plot(time-7.5, fly3_hpol_avg, 'b')
+xlabel('sec')
+ylabel('mV')
+xlim([2 4])
+title("Fly 3 (longer inj)")
+
 %% fix bridge error
 %bridge error is manually removed using indices determined by visual
 %inspection
@@ -157,7 +188,7 @@ injEnd_long = find(time == 11.2);
 
 %fly 1-3 bridge error correction
 
-avg_123_unbias = returnAvgTrace([fly1_hpol_avg, fly1_hpol_avg, fly3_hpol_avg]);
+avg_123_unbias = returnAvgTrace([fly1_hpol_avg, fly2_hpol_avg, fly3_hpol_avg]);
 %separate into before and after drop 
 PART1 = avg_123_unbias(1:200003);
 PART2 = avg_123_unbias(200004:420000);
@@ -172,28 +203,28 @@ avg_123_unbias_bridgeFix = [PART1(1:end-2); PART1(end-2); PART1(end-2); PART1(en
 
 %first, calculate during injection indices for flies 4-6
 
-durInj_fly4_t = time_300ms(injStart_short:injEnd_short);
-durInj_fly5_t = time_300ms(injStart_short:injEnd_short);
-durInj_fly6_t = time_300ms(injStart_short:injEnd_short);
+% durInj_fly4_t = time_300ms(injStart_short:injEnd_short);
+% durInj_fly5_t = time_300ms(injStart_short:injEnd_short);
+% durInj_fly6_t = time_300ms(injStart_short:injEnd_short);
 
-% durInj_fly1_v = fly1_hpol_avg(injStart_long:injEnd_long);
-% durInj_fly2_v = fly2_hpol_avg(injStart_long:injEnd_long);
-% durInj_fly3_v = fly3_hpol_avg(injStart_long:injEnd_long);
-durInj_fly4_v = fly4_hpol_avg(injStart_short:injEnd_short);
-durInj_fly5_v = fly5_hpol_avg(injStart_short:injEnd_short);
-durInj_fly6_v = fly6_hpol_avg(injStart_short:injEnd_short);
+durInj_fly1_v = fly1_hpol_avg(injStart_long:injEnd_long);
+durInj_fly2_v = fly2_hpol_avg(injStart_long:injEnd_long);
+durInj_fly3_v = fly3_hpol_avg(injStart_long:injEnd_long);
+% durInj_fly4_v = fly4_hpol_avg(injStart_short:injEnd_short);
+% durInj_fly5_v = fly5_hpol_avg(injStart_short:injEnd_short);
+% durInj_fly6_v = fly6_hpol_avg(injStart_short:injEnd_short);
 
 %extend traces using custom function (see end of script)
-[extend_fly4_t, extend_fly4_v] = extend300msTrace(durInj_fly4_v, durInj_fly4_t);
-[extend_fly5_t, extend_fly5_v] = extend300msTrace(durInj_fly5_v, durInj_fly5_t);
-[extend_fly6_t, extend_fly6_v] = extend300msTrace(durInj_fly6_v, durInj_fly6_t);
+% [extend_fly4_t, extend_fly4_v] = extend300msTrace(durInj_fly4_v, durInj_fly4_t);
+% [extend_fly5_t, extend_fly5_v] = extend300msTrace(durInj_fly5_v, durInj_fly5_t);
+% [extend_fly6_t, extend_fly6_v] = extend300msTrace(durInj_fly6_v, durInj_fly6_t);
 
 %now correct for bridge error in 4-6 using same protocol as for 1-3
-avg_456_unbias = returnAvgTrace([extend_fly4_v, extend_fly5_v, extend_fly6_v]);
-P1_S_END = find(extend_fly4_t+7.5==time(200003));
-PART1_SHORT = avg_456_unbias(1:P1_S_END);
-PART2_SHORT = avg_456_unbias(P1_S_END+1:28000);
-BRIDGE_DROP_456 = avg_456_unbias(P1_S_END) - avg_456_unbias(P1_S_END-2);
+% avg_456_unbias = returnAvgTrace([extend_fly4_v, extend_fly5_v, extend_fly6_v]);
+% P1_S_END = find(extend_fly4_t+7.5==time(200003));
+% PART1_SHORT = avg_456_unbias(1:P1_S_END);
+% PART2_SHORT = avg_456_unbias(P1_S_END+1:28000);
+% BRIDGE_DROP_456 = avg_456_unbias(P1_S_END) - avg_456_unbias(P1_S_END-2);
 %pretty sure the commented line below was my initial, incorrect, attempt as
 %restiching the traces: i cannot remember why i did not delete it, so it
 %might be useful for some unknown future purpose, but it can likely be
@@ -201,38 +232,38 @@ BRIDGE_DROP_456 = avg_456_unbias(P1_S_END) - avg_456_unbias(P1_S_END-2);
 % avg_456_unbias_bridgeFix = [PART1_SHORT(1:end-2); PART1_SHORT(end-2); PART1_SHORT(end-2); PART2_SHORT(1:19998)+abs(BRIDGE_DROP_456); PART2_SHORT(19998)+abs(BRIDGE_DROP); PART2_SHORT(19998)+abs(BRIDGE_DROP_456);...
 %     PART2_SHORT(19998)+abs(BRIDGE_DROP_456); PART2_SHORT(19998)+abs(BRIDGE_DROP_456); PART2_SHORT(20002:end)];
 
-avg_456_unbias_bridgeFix = [PART1_SHORT(1:end-2); PART1_SHORT(end-2);...
-    PART1_SHORT(end-2); PART1_SHORT(end-2); PART1_SHORT(end-2);...
-    PART2_SHORT(3:19998)+abs(BRIDGE_DROP_456);...
-    PART2_SHORT(19998)+abs(BRIDGE_DROP_456);...
-    PART2_SHORT(19998)+abs(BRIDGE_DROP_456);...
-    PART2_SHORT(19998)+abs(BRIDGE_DROP_456);...
-    PART2_SHORT(19998)+abs(BRIDGE_DROP_456);...
-    PART2_SHORT(19998)+abs(BRIDGE_DROP_456); PART2_SHORT(20003:end)];
+% avg_456_unbias_bridgeFix = [PART1_SHORT(1:end-2); PART1_SHORT(end-2);...
+%     PART1_SHORT(end-2); PART1_SHORT(end-2); PART1_SHORT(end-2);...
+%     PART2_SHORT(3:19998)+abs(BRIDGE_DROP_456);...
+%     PART2_SHORT(19998)+abs(BRIDGE_DROP_456);...
+%     PART2_SHORT(19998)+abs(BRIDGE_DROP_456);...
+%     PART2_SHORT(19998)+abs(BRIDGE_DROP_456);...
+%     PART2_SHORT(19998)+abs(BRIDGE_DROP_456);...
+%     PART2_SHORT(19998)+abs(BRIDGE_DROP_456); PART2_SHORT(20003:end)];
 
 
 %create master avg trace of flies 1-6 using bridge fixed 1-3 avg trace and
 %extended, bridge fixed 4-6 avg trace 
-avg_1thru6_BF = returnAvgTrace([avg_123_unbias_bridgeFix(injStart_long:injEnd_long), avg_456_unbias_bridgeFix]);
+% avg_1thru6_BF = returnAvgTrace([avg_123_unbias_bridgeFix(injStart_long:injEnd_long), avg_456_unbias_bridgeFix]);
 
 %% plot bridge fixed traces
 
-figure(2);
+figure(5);
 subplot(3, 3, 1)
 
-colorGrey = [0.7, 0.7, 0.7];
-plot(time, avg_123_unbias_bridgeFix, 'r')
-hold on
-plot(extend_fly6_t+7.5, avg_456_unbias_bridgeFix, 'b')
-plot(extend_fly6_t+7.5, avg_1thru6_BF, 'k')
+% colorGrey = [0.7, 0.7, 0.7];
+% plot(time, avg_123_unbias_bridgeFix, 'r')
+% hold on
+% plot(extend_fly6_t+7.5, avg_456_unbias_bridgeFix, 'b')
+% plot(extend_fly6_t+7.5, avg_1thru6_BF, 'k')
 
 plot(time, fly1_hpol_avg, 'color', colorGrey);
 xline(10+0.25/1000, 'g')
 plot(time, fly2_hpol_avg, 'color', colorGrey);
 plot(time, fly3_hpol_avg,'color', colorGrey);
-plot(extend_fly4_t+7.5, extend_fly4_v, 'color', colorGrey)
-plot(extend_fly5_t+7.5, extend_fly5_v, 'color', colorGrey)
-plot(extend_fly6_t+7.5, extend_fly6_v, 'color', colorGrey)
+% plot(extend_fly4_t+7.5, extend_fly4_v, 'color', colorGrey)
+% plot(extend_fly5_t+7.5, extend_fly5_v, 'color', colorGrey)
+% plot(extend_fly6_t+7.5, extend_fly6_v, 'color', colorGrey)
 
 legend('fly1-3 bridge fixed', 'fly4-6 bridge fixed', 'fly1-6 bridge fix', 'indiv traces 1-6 (no bridge fix)', 'decay start used in python sim')
 xlim([9.995, 10.005])
@@ -250,15 +281,15 @@ ylabel('mV')
 legend("bridge fix", "no bridge fix")
 title("fly 1-3 bridge fix vs no bridge fix")
 
-subplot(3,3,3)
-plot(extend_fly6_t+7.5, avg_456_unbias_bridgeFix, 'b')
-hold on
-plot(extend_fly4_t+7.5, avg_456_unbias, 'k');
-xlim([9.999, 10.01])
-xlabel('sec')
-ylabel('mV')
-legend("bridge fix", "no bridge fix")
-title("fly 4-6 bridge fix vs no bridge fix")
+% subplot(3,3,3)
+% plot(extend_fly6_t+7.5, avg_456_unbias_bridgeFix, 'b')
+% hold on
+% plot(extend_fly4_t+7.5, avg_456_unbias, 'k');
+% xlim([9.999, 10.01])
+% xlabel('sec')
+% ylabel('mV')
+% legend("bridge fix", "no bridge fix")
+% title("fly 4-6 bridge fix vs no bridge fix")
 
 % plot(extend_fly4_t+7.5, avg_456_unbias, 'r', 'LineWidth', 1, 'LineWidth', 2)
 % % plot(extend_fly6_t+7.5, avg_456_unbias, 'b')
@@ -271,15 +302,15 @@ subplot(3, 3, 4)
 colorGrey = [0.7, 0.7, 0.7];
 plot(time, avg_123_unbias_bridgeFix, 'r')
 hold on
-plot(extend_fly6_t+7.5, avg_456_unbias_bridgeFix, 'b')
+% plot(extend_fly6_t+7.5, avg_456_unbias_bridgeFix, 'b')
 plot(extend_fly6_t+7.5, avg_1thru6_BF, 'k')
 
 plot(time, fly1_hpol_avg, 'color', colorGrey);
 plot(time, fly2_hpol_avg, 'color', colorGrey);
 plot(time, fly3_hpol_avg,'color', colorGrey);
-plot(extend_fly4_t+7.5, extend_fly4_v, 'color', colorGrey)
-plot(extend_fly5_t+7.5, extend_fly5_v, 'color', colorGrey)
-plot(extend_fly6_t+7.5, extend_fly6_v, 'color', colorGrey)
+% plot(extend_fly4_t+7.5, extend_fly4_v, 'color', colorGrey)
+% plot(extend_fly5_t+7.5, extend_fly5_v, 'color', colorGrey)
+% plot(extend_fly6_t+7.5, extend_fly6_v, 'color', colorGrey)
 
 legend('fly1-3 bridge fixed', 'fly4-6 bridge fixed', 'fly1-6 bridge fix', 'indiv traces 1-6 (no bridge fix)', 'Location', 'Southeast')
 xlim([10.995, 11.005])
@@ -307,22 +338,22 @@ title("fly 1-3 bridge fix vs no bridge fix")
 % plot(extend_fly5_t+7.5, extend_fly5_v, 'b')
 % plot(extend_fly6_t+7.5, extend_fly6_v, 'b')
 
-subplot(3,3,6)
-plot(extend_fly6_t+7.5, avg_456_unbias_bridgeFix, 'b')
-hold on
-plot(extend_fly4_t+7.5, avg_456_unbias, 'k');
-xlim([10.995, 11.005])
-xlabel('sec')
-ylabel('mV')
-legend("bridge fix", "no bridge fix")
-title("fly 4-6 bridge fix vs no bridge fix")
+% subplot(3,3,6)
+% plot(extend_fly6_t+7.5, avg_456_unbias_bridgeFix, 'b')
+% hold on
+% plot(extend_fly4_t+7.5, avg_456_unbias, 'k');
+% xlim([10.995, 11.005])
+% xlabel('sec')
+% ylabel('mV')
+% legend("bridge fix", "no bridge fix")
+% title("fly 4-6 bridge fix vs no bridge fix")
 
 subplot(3, 1, 3)
 
 plot(time, avg_123_unbias_bridgeFix, 'r')
-hold on
-plot(extend_fly4_t+7.5, avg_456_unbias_bridgeFix, 'b');
-plot(extend_fly6_t+7.5, avg_1thru6_BF, 'k')
+% hold on
+% plot(extend_fly4_t+7.5, avg_456_unbias_bridgeFix, 'b');
+% plot(extend_fly6_t+7.5, avg_1thru6_BF, 'k')
 
 xlim([9.9, 11.1])
 xlabel('sec')
