@@ -1,6 +1,6 @@
 # VPN-DN-synapse-normalization
 
-This repository accompanys "Morphology and synapse topography optimize linear encoding of synapse numbers in Drosophila looming responsive descending neurons." (doi: 10.1101/2024.04.24.591016.)
+This repository is for the publication "Morphology and synapse topography optimize linear encoding of synapse numbers in Drosophila looming responsive descending neurons." (doi: 10.1101/2024.04.24.591016.)
 
 It contains all code necessary for the modeling pipeline, skeletonizing DNs, modeling their synaptic activations, mapping receptive fields of VPNs, and investigating retinotopy. 
 
@@ -17,8 +17,8 @@ General flow of modeling pipeline:
 8. Visualize/Analyze/Plot synapse activation data (synDepolPlotter.py) 
 
 
-Note: Direct simulation data has been ommitted, however available upon request.
+Note: Direct simulation data has been omitted, however available upon request.
 Note: In the synDepolPlotter.py, functions will need to be adjusted to use the appropriate simulation data generated from the individual simulations (synActivation.py)
 
-For any questions about the pipeline or questions regarding simulations please direct any correspondance to Anthony Moreno-Sanchez (am4946@drexel.edu)
+For any questions about the pipeline or questions regarding simulations please direct any correspondence to Anthony Moreno-Sanchez (am4946@drexel.edu) or Jessica Ausborn (ja696@drexel.edu)
 For mesh data or data files for recreating exact figures in the paper reach out to Anthony.
