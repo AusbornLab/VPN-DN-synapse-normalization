@@ -2,6 +2,8 @@
 
 This repository is for the publication "Morphology and synapse topography optimize linear encoding of synapse numbers in Drosophila looming responsive descending neurons." (doi: 10.1101/2024.04.24.591016.)
 
+[![DOI](https://zenodo.org/badge/791283579.svg)](https://doi.org/10.5281/zenodo.22663333)
+
 It contains all code necessary for the modeling pipeline, skeletonizing DNs, modeling their synaptic activations, mapping receptive fields of VPNs, and investigating retinotopy. 
 
 Scripts are written in R, matlab and python, and require changing between languages for  processing of data, the outline and order of files is outlined below.
@@ -22,3 +24,4 @@ Note: In the synDepolPlotter.py, functions will need to be adjusted to use the a
 
 For any questions about the pipeline or questions regarding simulations please direct any correspondence to Anthony Moreno-Sanchez (am4946@drexel.edu) or Jessica Ausborn (ja696@drexel.edu)
 For mesh data or data files for recreating exact figures in the paper reach out to Anthony.
+
