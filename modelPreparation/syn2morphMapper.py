@@ -9,6 +9,14 @@ import tkinter.filedialog as fd
 #0 = unlabeled | 1 = soma | 2 = axon | 3 = dendrite
 h.load_file("stdrun.hoc")
 
+def filterSynapsesToCriteria(subsetInfo, synMap_df):
+    filteredSyn_List = []
+    for index, row in synMap_df.iterrows():
+        if row.loc['type'] in subsetInfo:
+            filteredSyn_List.append(row)
+    filteredSyn_df = pd.DataFrame(filteredSyn_List)
+    return filteredSyn_df
+
 def loadSynData():
     #select synapse data file using tkinter
     Tk().withdraw()
@@ -19,7 +27,11 @@ def loadSynData():
     #was pulled from FAFB and before low-confidence synapses were filtered out (which is why it appears out of order)
     #this column could just be ignored, but it is effectively meaningless and therefore is dropped for clarity/simplicity
     synData_df = synData_df.drop(synData_df.columns[0], axis=1)
-    return synData_df
+    # synMap_VPN_df = filterSynapsesToCriteria(['LC4', 'LC6', 'LC22', 'LPLC1', 'LPLC2', 'LPLC4'], synData_df) # for original FAFB below commands work with FAFB and hemibrain
+    
+    #for hemibrain data type data is different
+    synMap_VPN_df = filterSynapsesToCriteria(['LC4', 'LC6', 'LC22', 'LPLC1', 'LPLC2', 'LPLC4', 'LPLC4_R', 'LPLC1_R', ' LC22_R', 'LC4(lVLPT8)_R'], synData_df)
+    return synMap_VPN_df
 
 def mapSynapses(outFilename=None, neuron_name = None):
     #function for mapping synapses from coordinates in space to sections of the morphology
@@ -46,12 +58,6 @@ def mapSynapses(outFilename=None, neuron_name = None):
 
     ### begin main loop of mapping process ###
 
-    #this outer for loop iterates over each synapse and assigns to it two properties: the ID of a section of the morphology and a range variable called synSegRangeVar
-    #that indicates how far along the section the synapse should be located
-
-    #the inner for loop then iterates over every coordinate point saved in the coordData_df dataframe and calculates the distance
-    #from that coordinate to the synapse, updating a placeholder variable (synSec) whenever appropriate (currDist < minDist)
-    #TODO: add if nan, skip
     for synIndex, synRow in synData_df.iterrows():
         synCoords = []
         #since we are mapping the synapse onto the morphology, we use the postsynaptic coordinates and extract them here
@@ -186,14 +192,14 @@ def main():
     Tk().withdraw()
     fd_title = "Select morphology file to use for synapse mapping"
     morph_file = fd.askopenfilename(filetypes=[("swc file", "*.swc"), ("hoc file","*.hoc")], initialdir=r"datafiles/morphologyData", title=fd_title)
-
+    
     #cell is instantiated so h.allsec() can be called in the mapSynapses function
     #this allows sections to be accessed for mapping purposes
     cell = instantiate_swc(morph_file)
 
     #if a custom filename is desired for the output synapse map .csv, the outFilename parameter below should be changed
     #to change the directory to which the synapse map .csv is written, make edits to the outFilename parameter at the end of the mapSynapses function
-    mapSynapses(outFilename="synMap_DNp01_021324.csv", neuron_name="DNp01")
+    mapSynapses(outFilename="synMap_DNp06_8_19_2025.csv", neuron_name="DNp06")
 
 main()
 

@@ -15,19 +15,19 @@ library(readxl)
 
 # Loading in the receptive field estimated COMs
 
-LC4_receptive_field <- read_excel("LC4_receptivefield_COM.xlsx")
-LC6_receptive_field <- read_excel("LC6_receptivefield_COM.xlsx")
-LC22_receptive_field <- read_excel("LC22_receptivefield_COM.xlsx")
-LPLC1_receptive_field <- read_excel("LPLC1_receptivefield_COM.xlsx")
-LPLC2_receptive_field <- read_excel("LPLC2_receptivefield_COM.xlsx")
-LPLC4_receptive_field <- read_excel("LPLC4_receptivefield_COM.xlsx")
+LC4_receptive_field <- read_excel("datafiles/Receptive_field_files/LC4_receptive_field.xlsx")
+LC6_receptive_field <- read_excel("datafiles/Receptive_field_files/LC6_receptive_field.xlsx")
+LC22_receptive_field <- read_excel("datafiles/Receptive_field_files/LC22_receptive_field.xlsx")
+LPLC1_receptive_field <- read_excel("datafiles/Receptive_field_files/LPLC1_receptive_field.xlsx")
+LPLC2_receptive_field <- read_excel("datafiles/Receptive_field_files/LPLC2_receptive_field.xlsx")
+LPLC4_receptive_field <- read_excel("datafiles/Receptive_field_files/LPLC4_receptive_field.xlsx")
 
 # Loading in the synapse data
-DNp01_syn_fly <- read_excel("DNp01_flywire_syn_labeled_um.xlsx")
-DNp02_syn_fly <- read_excel("DNp02_flywire_syn_labeled_um.xlsx")
-DNp03_syn_fly <- read_excel("DNp03_flywire_syn_labeled_um.xlsx")
-DNp04_syn_fly <- read_excel("DNp04_flywire_syn_labeled_um.xlsx")
-DNp06_syn_fly <- read_excel("DNp06_flywire_syn_labeled_um.xlsx")
+DNp01_syn_fly <- read_excel("datafiles/morphologyData/DNp01_morphData/DNp01_caveclient_syn_labeled_um_8_19_2025.xlsx")
+DNp02_syn_fly <- read_excel("datafiles/morphologyData/DNp02_morphData/DNp02_caveclient_syn_labeled_um_8_19_2025.xlsx")
+DNp03_syn_fly <- read_excel("datafiles/morphologyData/DNp03_morphData/DNp03_caveclient_syn_labeled_um_8_19_2025.xlsx")
+DNp04_syn_fly <- read_excel("datafiles/morphologyData/DNp04_morphData/DNp04_caveclient_syn_labeled_um_8_19_2025.xlsx")
+DNp06_syn_fly <- read_excel("datafiles/morphologyData/DNp06_morphData/DNp06_caveclient_syn_labeled_um_8_19_2025.xlsx")
 
 ##DN mesh data
 choose_segmentation("flywire")
@@ -52,8 +52,7 @@ Ventral_LC4 <- DV_LC4[1:10,]
 Dorsal_LC4 <- DV_LC4[45:54,]
 Anterior_LC4 <- AP_LC4[1:10,]
 Posterior_LC4 <- AP_LC4[45:54,]
-Ventral_ids = Ventral_LC4$updated_ids
-Dorsal_ids = Dorsal_LC4$updated_ids
+
 
 #Same as above but for LC6
 DV_LC6 <- LC6_receptive_field[with(LC6_receptive_field,order(-DV_norm)),]
@@ -96,16 +95,7 @@ Dorsal_LPLC4 <- DV_LPLC4[45:54,]
 Anterior_LPLC4 <- AP_LPLC4[1:10,]
 Posterior_LPLC4 <- AP_LPLC4[45:54,]
 
-#Assign the skeletons to read, just assign the VPN population loaded above, however you can also read the mesh directly from the flywire website,
-#note that some may not plot if the ID has changed since the skeletonization, so use the meshes down below in case of that, or go back and re-skeletonize
-neu <- LPLC4
 
-for (id in Anterior_LPLC4$updated_ids) {
-  plot3d(neu[[id]], col = "red", WithNodes = FALSE, axes = FALSE, xlab = "", ylab = "", zlab = "")
-}
-for (id in Posterior_LPLC4$updated_ids) {
-  plot3d(neu[[id]], col = "blue", WithNodes = FALSE, axes = FALSE, xlab = "", ylab = "", zlab = "")
-}
 
 #Utilizing the meshes for each population: Takes approximately 20-30 seconds per command.
 #This is purely for visualization of populations in each axis.
@@ -155,142 +145,81 @@ plot3d(FAFB14)
 #rgl.snapshot(filename = "change_filename_here.png",fmt = "png")
 
 
-### Temp work area to plot the synapses to each DN by their axis ###
-
-# Update the IDs from the receptive fields, here you can change which direction you want to look at (do one at a time to keep track)
-ids <- Posterior_LPLC4$updated_ids
-ids_updated = flywire_updateids(ids)
-
-#LC4
-Dorsal_LC4<- cbind(select(Dorsal_LC4, -updated_ids), updated_ids = ids_updated)
-Anterior_LC4<- cbind(select(Anterior_LC4, -updated_ids), updated_ids = ids_updated)
-Ventral_LC4<- cbind(select(Ventral_LC4, -updated_ids), updated_ids = ids_updated)
-Posterior_LC4<- cbind(select(Posterior_LC4, -updated_ids), updated_ids = ids_updated)
-
-#LC6
-Dorsal_LC6<- cbind(select(Dorsal_LC6, -updated_ids), updated_ids = ids_updated)
-Anterior_LC6<- cbind(select(Anterior_LC6, -updated_ids), updated_ids = ids_updated)
-Ventral_LC6<- cbind(select(Ventral_LC6, -updated_ids), updated_ids = ids_updated)
-Posterior_LC6<- cbind(select(Posterior_LC6, -updated_ids), updated_ids = ids_updated)
-
-#LC22
-Dorsal_LC22<- cbind(select(Dorsal_LC22, -updated_ids), updated_ids = ids_updated)
-Anterior_LC22<- cbind(select(Anterior_LC22, -updated_ids), updated_ids = ids_updated)
-Ventral_LC22<- cbind(select(Ventral_LC22, -updated_ids), updated_ids = ids_updated)
-Posterior_LC22<- cbind(select(Posterior_LC22, -updated_ids), updated_ids = ids_updated)
-
-#LPLC1
-Dorsal_LPLC1<- cbind(select(Dorsal_LPLC1, -updated_ids), updated_ids = ids_updated)
-Anterior_LPLC1<- cbind(select(Anterior_LPLC1, -updated_ids), updated_ids = ids_updated)
-Ventral_LPLC1<- cbind(select(Ventral_LPLC1, -updated_ids), updated_ids = ids_updated)
-Posterior_LPLC1<- cbind(select(Posterior_LPLC1, -updated_ids), updated_ids = ids_updated)
-
-#LPLC2
-Dorsal_LPLC2<- cbind(select(Dorsal_LPLC2, -updated_ids), updated_ids = ids_updated)
-Anterior_LPLC2<- cbind(select(Anterior_LPLC2, -updated_ids), updated_ids = ids_updated)
-Ventral_LPLC2<- cbind(select(Ventral_LPLC2, -updated_ids), updated_ids = ids_updated)
-Posterior_LPLC2<- cbind(select(Posterior_LPLC2, -updated_ids), updated_ids = ids_updated)
-
-#LPLC4
-Dorsal_LPLC4<- cbind(select(Dorsal_LPLC4, -updated_ids), updated_ids = ids_updated)
-Anterior_LPLC4<- cbind(select(Anterior_LPLC4, -updated_ids), updated_ids = ids_updated)
-Ventral_LPLC4<- cbind(select(Ventral_LPLC4, -updated_ids), updated_ids = ids_updated)
-Posterior_LPLC4<- cbind(select(Posterior_LPLC4, -updated_ids), updated_ids = ids_updated)
-
-#Update the IDs from the synapse data
-DNp01_ids <-DNp01_syn_fly_points$pre
-DNp01_ids_updated = flywire_updateids(DNp01_ids)
-DNp01_syn_fly_points<- cbind(select(DNp01_syn_fly_points, -pre), updated_ids = DNp01_ids_updated)
-
-DNp02_ids <-DNp02_syn_fly_points$pre
-DNp02_ids_updated = flywire_updateids(DNp02_ids)
-DNp02_syn_fly_points<- cbind(select(DNp02_syn_fly_points, -pre), updated_ids = DNp02_ids_updated)
-
-DNp03_ids <-DNp03_syn_fly_points$pre
-DNp03_ids_updated = flywire_updateids(DNp03_ids)
-DNp03_syn_fly_points<- cbind(select(DNp03_syn_fly_points, -pre), updated_ids = DNp03_ids_updated)
-
-DNp04_ids <-DNp04_syn_fly_points$pre
-DNp04_ids_updated = flywire_updateids(DNp04_ids)
-DNp04_syn_fly_points<- cbind(select(DNp04_syn_fly_points, -pre), updated_ids = DNp04_ids_updated)
-
-DNp06_ids <-DNp06_syn_fly_points$pre
-DNp06_ids_updated = flywire_updateids(DNp06_ids)
-DNp06_syn_fly_points<- cbind(select(DNp06_syn_fly_points, -pre), updated_ids = DNp06_ids_updated)
+### Ploting the synapses to each DN by their axis ###
 
 ## Subsetting the VPN synapses for DN of interest the IDs from the receptive fields.
 #DNp01 VPNS: LC4 and LPLC2
-Dorsal_LC4_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$updated_ids %in% Dorsal_LC4$updated_ids, ]
-Ventral_LC4_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$updated_ids %in% Ventral_LC4$updated_ids, ]
-Anterior_LC4_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$updated_ids %in% Anterior_LC4$updated_ids, ]
-Posterior_LC4_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$updated_ids %in% Posterior_LC4$updated_ids, ]
+Dorsal_LC4_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$pre %in% Dorsal_LC4$updated_ids, ]
+Ventral_LC4_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$pre %in% Ventral_LC4$updated_ids, ]
+Anterior_LC4_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$pre %in% Anterior_LC4$updated_ids, ]
+Posterior_LC4_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$pre %in% Posterior_LC4$updated_ids, ]
 
-Dorsal_LPLC2_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$updated_ids %in% Dorsal_LPLC2$updated_ids, ]
-Ventral_LPLC2_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$updated_ids %in% Ventral_LPLC2$updated_ids, ]
-Anterior_LPLC2_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$updated_ids %in% Anterior_LPLC2$updated_ids, ]
-Posterior_LPLC2_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$updated_ids %in% Posterior_LPLC2$updated_ids, ]
+Dorsal_LPLC2_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$pre %in% Dorsal_LPLC2$updated_ids, ]
+Ventral_LPLC2_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$pre %in% Ventral_LPLC2$updated_ids, ]
+Anterior_LPLC2_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$pre %in% Anterior_LPLC2$updated_ids, ]
+Posterior_LPLC2_DNp01 <- DNp01_syn_fly_points[DNp01_syn_fly_points$pre %in% Posterior_LPLC2$updated_ids, ]
 
 #DNp02 VPNS: LC4 
-Dorsal_LC4_DNp02 <- DNp02_syn_fly_points[DNp02_syn_fly_points$updated_ids %in% Dorsal_LC4$updated_ids, ]
-Ventral_LC4_DNp02 <- DNp02_syn_fly_points[DNp02_syn_fly_points$updated_ids %in% Ventral_LC4$updated_ids, ]
-Anterior_LC4_DNp02 <- DNp02_syn_fly_points[DNp02_syn_fly_points$updated_ids %in% Anterior_LC4$updated_ids, ]
-Posterior_LC4_DNp02 <- DNp02_syn_fly_points[DNp02_syn_fly_points$updated_ids %in% Posterior_LC4$updated_ids, ]
+Dorsal_LC4_DNp02 <- DNp02_syn_fly_points[DNp02_syn_fly_points$pre %in% Dorsal_LC4$updated_ids, ]
+Ventral_LC4_DNp02 <- DNp02_syn_fly_points[DNp02_syn_fly_points$pre %in% Ventral_LC4$updated_ids, ]
+Anterior_LC4_DNp02 <- DNp02_syn_fly_points[DNp02_syn_fly_points$pre %in% Anterior_LC4$updated_ids, ]
+Posterior_LC4_DNp02 <- DNp02_syn_fly_points[DNp02_syn_fly_points$pre %in% Posterior_LC4$updated_ids, ]
 
 #DNp03 VPNS: LC4, LC22, LPLC1, and LPLC4
-Dorsal_LC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Dorsal_LC4$updated_ids, ]
-Ventral_LC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Ventral_LC4$updated_ids, ]
-Anterior_LC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Anterior_LC4$updated_ids, ]
-Posterior_LC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Posterior_LC4$updated_ids, ]
+Dorsal_LC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Dorsal_LC4$updated_ids, ]
+Ventral_LC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Ventral_LC4$updated_ids, ]
+Anterior_LC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Anterior_LC4$updated_ids, ]
+Posterior_LC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Posterior_LC4$updated_ids, ]
 
-Dorsal_LC22_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Dorsal_LC22$updated_ids, ]
-Ventral_LC22_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Ventral_LC22$updated_ids, ]
-Anterior_LC22_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Anterior_LC22$updated_ids, ]
-Posterior_LC22_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Posterior_LC22$updated_ids, ]
+Dorsal_LC22_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Dorsal_LC22$updated_ids, ]
+Ventral_LC22_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Ventral_LC22$updated_ids, ]
+Anterior_LC22_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Anterior_LC22$updated_ids, ]
+Posterior_LC22_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Posterior_LC22$updated_ids, ]
 
-Dorsal_LPLC1_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Dorsal_LPLC1$updated_ids, ]
-Ventral_LPLC1_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Ventral_LPLC1$updated_ids, ]
-Anterior_LPLC1_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Anterior_LPLC1$updated_ids, ]
-Posterior_LPLC1_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Posterior_LPLC1$updated_ids, ]
+Dorsal_LPLC1_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Dorsal_LPLC1$updated_ids, ]
+Ventral_LPLC1_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Ventral_LPLC1$updated_ids, ]
+Anterior_LPLC1_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Anterior_LPLC1$updated_ids, ]
+Posterior_LPLC1_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Posterior_LPLC1$updated_ids, ]
 
-Dorsal_LPLC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Dorsal_LPLC4$updated_ids, ]
-Ventral_LPLC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Ventral_LPLC4$updated_ids, ]
-Anterior_LPLC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Anterior_LPLC4$updated_ids, ]
-Posterior_LPLC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$updated_ids %in% Posterior_LPLC4$updated_ids, ]
+Dorsal_LPLC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Dorsal_LPLC4$updated_ids, ]
+Ventral_LPLC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Ventral_LPLC4$updated_ids, ]
+Anterior_LPLC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Anterior_LPLC4$updated_ids, ]
+Posterior_LPLC4_DNp03 <- DNp03_syn_fly_points[DNp03_syn_fly_points$pre %in% Posterior_LPLC4$updated_ids, ]
 
 #DNp04 VPNS: LC4, and LPLC2
-Dorsal_LC4_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$updated_ids %in% Dorsal_LC4$updated_ids, ]
-Ventral_LC4_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$updated_ids %in% Ventral_LC4$updated_ids, ]
-Anterior_LC4_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$updated_ids %in% Anterior_LC4$updated_ids, ]
-Posterior_LC4_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$updated_ids %in% Posterior_LC4$updated_ids, ]
+Dorsal_LC4_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$pre %in% Dorsal_LC4$updated_ids, ]
+Ventral_LC4_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$pre %in% Ventral_LC4$updated_ids, ]
+Anterior_LC4_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$pre %in% Anterior_LC4$updated_ids, ]
+Posterior_LC4_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$pre %in% Posterior_LC4$updated_ids, ]
 
-Dorsal_LPLC2_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$updated_ids %in% Dorsal_LPLC2$updated_ids, ]
-Ventral_LPLC2_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$updated_ids %in% Ventral_LPLC2$updated_ids, ]
-Anterior_LPLC2_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$updated_ids %in% Anterior_LPLC2$updated_ids, ]
-Posterior_LPLC2_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$updated_ids %in% Posterior_LPLC2$updated_ids, ]
+Dorsal_LPLC2_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$pre %in% Dorsal_LPLC2$updated_ids, ]
+Ventral_LPLC2_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$pre %in% Ventral_LPLC2$updated_ids, ]
+Anterior_LPLC2_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$pre %in% Anterior_LPLC2$updated_ids, ]
+Posterior_LPLC2_DNp04 <- DNp04_syn_fly_points[DNp04_syn_fly_points$pre %in% Posterior_LPLC2$updated_ids, ]
 
 # DNp06 VPNS: LC4, LC6, LPLC1, and LPLC2
-Dorsal_LC4_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Dorsal_LC4$updated_ids, ]
-Ventral_LC4_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Ventral_LC4$updated_ids, ]
-Anterior_LC4_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Anterior_LC4$updated_ids, ]
-Posterior_LC4_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Posterior_LC4$updated_ids, ]
+Dorsal_LC4_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Dorsal_LC4$updated_ids, ]
+Ventral_LC4_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Ventral_LC4$updated_ids, ]
+Anterior_LC4_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Anterior_LC4$updated_ids, ]
+Posterior_LC4_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Posterior_LC4$updated_ids, ]
 
-Dorsal_LC6_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Dorsal_LC6$updated_ids, ]
-Ventral_LC6_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Ventral_LC6$updated_ids, ]
-Anterior_LC6_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Anterior_LC6$updated_ids, ]
-Posterior_LC6_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Posterior_LC6$updated_ids, ]
+Dorsal_LC6_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Dorsal_LC6$updated_ids, ]
+Ventral_LC6_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Ventral_LC6$updated_ids, ]
+Anterior_LC6_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Anterior_LC6$updated_ids, ]
+Posterior_LC6_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Posterior_LC6$updated_ids, ]
 
-Dorsal_LPLC1_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Dorsal_LPLC1$updated_ids, ]
-Ventral_LPLC1_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Ventral_LPLC1$updated_ids, ]
-Anterior_LPLC1_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Anterior_LPLC1$updated_ids, ]
-Posterior_LPLC1_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Posterior_LPLC1$updated_ids, ]
+Dorsal_LPLC1_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Dorsal_LPLC1$updated_ids, ]
+Ventral_LPLC1_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Ventral_LPLC1$updated_ids, ]
+Anterior_LPLC1_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Anterior_LPLC1$updated_ids, ]
+Posterior_LPLC1_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Posterior_LPLC1$updated_ids, ]
 
-Dorsal_LPLC2_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Dorsal_LPLC2$updated_ids, ]
-Ventral_LPLC2_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Ventral_LPLC2$updated_ids, ]
-Anterior_LPLC2_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Anterior_LPLC2$updated_ids, ]
-Posterior_LPLC2_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$updated_ids %in% Posterior_LPLC2$updated_ids, ]
+Dorsal_LPLC2_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Dorsal_LPLC2$updated_ids, ]
+Ventral_LPLC2_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Ventral_LPLC2$updated_ids, ]
+Anterior_LPLC2_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Anterior_LPLC2$updated_ids, ]
+Posterior_LPLC2_DNp06 <- DNp06_syn_fly_points[DNp06_syn_fly_points$pre %in% Posterior_LPLC2$updated_ids, ]
 
 # Counting of synapses across the neurons 
-unique(Posterior_LPLC2_DNp06$updated_ids)
+length(Posterior_LC4_DNp01$pre)
 
 Posterior_LPLC2_syns_to_DNp06 = aggregate(data.frame(synapses = Posterior_LPLC2_DNp06$updated_ids), list(LPLC2_ID = Posterior_LPLC2_DNp06$updated_ids), length)
 Posterior_LPLC2_syn_count_to_DNp06 = length(Posterior_LPLC2_DNp06$updated_ids) # 59 synapses 
@@ -303,7 +232,7 @@ points3d(Dorsal_LC4_DNp01$post_x, Dorsal_LC4_DNp01$post_y, Dorsal_LC4_DNp01$post
 points3d(Ventral_LC4_DNp01$post_x, Ventral_LC4_DNp01$post_y, Ventral_LC4_DNp01$post_z, col = 'blue', size= 16)
 points3d(Anterior_LC4_DNp01$post_x, Anterior_LC4_DNp01$post_y, Anterior_LC4_DNp01$post_z, col = 'purple', size= 16)
 points3d(Posterior_LC4_DNp01$post_x, Posterior_LC4_DNp01$post_y, Posterior_LC4_DNp01$post_z, col = 'cyan', size= 16)
-plot3d(DNp01_mesh_fly/1000, col ='black', alpha = 0.3)
+plot3d(DNp01_mesh/1000, col ='black', alpha = 0.3)
 
 # LPLC2 > DNp01
 points3d(Dorsal_LPLC2_DNp01$post_x, Dorsal_LPLC2_DNp01$post_y, Dorsal_LPLC2_DNp01$post_z, col = 'red', size= 16)
@@ -313,7 +242,39 @@ points3d(Posterior_LPLC2_DNp01$post_x, Posterior_LPLC2_DNp01$post_y, Posterior_L
 
 #DNp01 VPN zoomed in dendrites 
 view3d(fov=0,zoom=0.25,userMatrix=rotationMatrix(50/180*pi,1,0,0) %*% rotationMatrix(30/180*pi,0,0,1) %*% rotationMatrix(-55/180*pi,0,1,0))
-rgl.snapshot(filename = "LC4_DV_synapses_to_DNp01.png",fmt = "png")
+
+# Place scalebar near bottom-left-front corner with adjusted position
+scalebar_length <- 15
+margin <- 0.8 # x and y margin
+depth_fraction <- 0.3  # how far forward along Z (0 = back, 1 = front)
+
+xrange <- diff(bbox[1:2])
+yrange <- diff(bbox[3:4])
+zrange <- diff(bbox[5:6])
+
+# Starting point of the scalebar
+bar_start <- c(
+  bbox[1] + margin * xrange,
+  bbox[3] + margin * yrange,
+  bbox[5] + depth_fraction * zrange
+)
+
+# End point along x-axis
+bar_end <- bar_start + c(scalebar_length, 0, 0)
+
+# Draw the scalebar line
+segments3d(rbind(bar_start, bar_end), col = "black", lwd = 4)
+
+# Add text label centered above the line
+text3d(
+  x = mean(c(bar_start[1], bar_end[1])),
+  y = bar_start[2] + 0.02 * yrange,  # slight vertical offset
+  z = bar_start[3],
+  texts = paste0(scalebar_length, "um"),
+  col = "black",
+  cex = 1
+)
+rgl.snapshot(filename = "LC4_AP_synapses_to_DNp01.png",fmt = "png")
 
 #DNp03 VPN zoomed in dendrites 
 # LPLC4 > DNp03
@@ -321,24 +282,57 @@ points3d(Dorsal_LPLC4_DNp03$post_x, Dorsal_LPLC4_DNp03$post_y, Dorsal_LPLC4_DNp0
 points3d(Ventral_LPLC4_DNp03$post_x, Ventral_LPLC4_DNp03$post_y, Ventral_LPLC4_DNp03$post_z, col = 'blue', size= 16)
 points3d(Anterior_LPLC4_DNp03$post_x, Anterior_LPLC4_DNp03$post_y, Anterior_LPLC4_DNp03$post_z, col = 'purple', size= 16)
 points3d(Posterior_LPLC4_DNp03$post_x, Posterior_LPLC4_DNp03$post_y, Posterior_LPLC4_DNp03$post_z, col = 'cyan', size= 16)
-plot3d(DNp03_mesh_fly/1000, col ='black', alpha = 0.3)
-view3d(fov=10,zoom=0.22,userMatrix=rotationMatrix(31/180*pi,1,0,0) %*% rotationMatrix(20/180*pi,0,0,1) %*% rotationMatrix(-18/180*pi,0,1,0))
-view3d(zoom =.22)
+plot3d(DNp03_mesh/1000, col ='black', alpha = 0.3)
 
+scalebar_length <- 15
+margin <- 0.45 # x and y margin
+depth_fraction <- 0.3  # how far forward along Z (0 = back, 1 = front)
+
+xrange <- diff(bbox[1:2])
+yrange <- diff(bbox[3:4])
+zrange <- diff(bbox[5:6])
+
+# Starting point of the scalebar
+bar_start <- c(
+  bbox[1] + margin * xrange,
+  bbox[3] + margin * yrange,
+  bbox[5] + depth_fraction * zrange
+)
+
+# End point along x-axis
+bar_end <- bar_start + c(scalebar_length, 0, 2)
+
+# Draw the scalebar line
+segments3d(rbind(bar_start, bar_end), col = "black", lwd = 4)
+
+# Add text label centered above the line
+text3d(
+  x = mean(c(bar_start[1], bar_end[1])),
+  y = bar_start[2] + 0.02 * yrange,  # slight vertical offset
+  z = bar_start[3],
+  texts = paste0(scalebar_length, "um"),
+  col = "black",
+  cex = 1
+)
+view3d(fov=10,zoom=0.25,userMatrix=rotationMatrix(31/180*pi,1,0,0) %*% rotationMatrix(20/180*pi,0,0,1) %*% rotationMatrix(-18/180*pi,0,1,0))
 rgl.snapshot(filename = "LPLC4_DV_synapses_to_DNp03.png",fmt = "png")
 
 ###### Below is the synapse count per 10 VPNs per axis and the plotting of VPN synapses to other DNs. 
-Dorsal_LC4_syn_count_to_DNp01 = length(Dorsal_LC4_DNp01$updated_ids) # 86 synapses
-Ventral_LC4_syn_count_to_DNp01 = length(Ventral_LC4_DNp01$updated_ids) # 85 synapses
-Anterior_LC4_syn_count_to_DNp01 = length(Anterior_LC4_DNp01$updated_ids) # 121 synapses
-Posterior_LC4_syn_count_to_DNp01 = length(Posterior_LC4_DNp01$updated_ids) # 105 synapses
+get_syn_count <- function(region = "Dorsal", vpn = "LC4", dn = "DNp01") {
+  # Construct the full variable name
+  var_name <- paste0(region, "_", vpn, "_", dn)
+  
+  # Access the variable and count synapses
+  syn_count <- length(get(var_name)$pre)
+  
+  return(syn_count)
+}
+
+# Example usage:
+get_syn_count("Dorsal", "LC4", "DNp01")
+get_syn_count("Ventral", "LPLC4", "DNp03")
 
 
-
-Dorsal_LPLC2_syn_count_to_DNp01 = length(Dorsal_LPLC2_DNp01$updated_ids) # 116 synapses
-Ventral_LPLC2_syn_count_to_DNp01 = length(Ventral_LPLC2_DNp01$updated_ids) # 16 synapses
-Anterior_LPLC2_syn_count_to_DNp01 = length(Anterior_LPLC2_DNp01$updated_ids) # 39 synapses
-Posterior_LPLC2_syn_count_to_DNp01 = length(Posterior_LPLC2_DNp01$updated_ids) # 32 synapses
 
 # LC4 > DNp02
 points3d(Dorsal_LC4_DNp02$post_x, Dorsal_LC4_DNp02$post_y, Dorsal_LC4_DNp02$post_z, col = 'red', size= 10)
@@ -346,10 +340,6 @@ points3d(Ventral_LC4_DNp02$post_x, Ventral_LC4_DNp02$post_y, Ventral_LC4_DNp02$p
 points3d(Anterior_LC4_DNp02$post_x, Anterior_LC4_DNp02$post_y, Anterior_LC4_DNp02$post_z, col = 'purple', size= 10)
 points3d(Posterior_LC4_DNp02$post_x, Posterior_LC4_DNp02$post_y, Posterior_LC4_DNp02$post_z, col = 'cyan', size= 10)
 
-Dorsal_LC4_syn_count_to_DNp02 = length(Dorsal_LC4_DNp02$updated_ids) # 121 synapses
-Ventral_LC4_syn_count_to_DNp02 = length(Ventral_LC4_DNp02$updated_ids) # 163 synapses
-Anterior_LC4_syn_count_to_DNp02 = length(Anterior_LC4_DNp02$updated_ids) # 221 synapses
-Posterior_LC4_syn_count_to_DNp02 = length(Posterior_LC4_DNp02$updated_ids) # 47 synapses
 
 # LC4 > DNp03
 points3d(Dorsal_LC4_DNp03$post_x, Dorsal_LC4_DNp03$post_y, Dorsal_LC4_DNp03$post_z, col = 'red', size= 10)
@@ -357,10 +347,6 @@ points3d(Ventral_LC4_DNp03$post_x, Ventral_LC4_DNp03$post_y, Ventral_LC4_DNp03$p
 points3d(Anterior_LC4_DNp03$post_x, Anterior_LC4_DNp03$post_y, Anterior_LC4_DNp03$post_z, col = 'purple', size= 10)
 points3d(Posterior_LC4_DNp03$post_x, Posterior_LC4_DNp03$post_y, Posterior_LC4_DNp03$post_z, col = 'cyan', size= 10)
 
-Dorsal_LC4_syn_count_to_DNp03 = length(Dorsal_LC4_DNp03$updated_ids) # 82 synapses
-Ventral_LC4_syn_count_to_DNp03 = length(Ventral_LC4_DNp03$updated_ids) # 111 synapses
-Anterior_LC4_syn_count_to_DNp03 = length(Anterior_LC4_DNp03$updated_ids) # 102 synapses
-Posterior_LC4_syn_count_to_DNp03 = length(Posterior_LC4_DNp03$updated_ids) # 116 synapses
 
 # LC22 > DNp03
 points3d(Dorsal_LC22_DNp03$post_x, Dorsal_LC22_DNp03$post_y, Dorsal_LC22_DNp03$post_z, col = 'red', size= 10)
@@ -368,26 +354,11 @@ points3d(Ventral_LC22_DNp03$post_x, Ventral_LC22_DNp03$post_y, Ventral_LC22_DNp0
 points3d(Anterior_LC22_DNp03$post_x, Anterior_LC22_DNp03$post_y, Anterior_LC22_DNp03$post_z, col = 'purple', size= 10)
 points3d(Posterior_LC22_DNp03$post_x, Posterior_LC22_DNp03$post_y, Posterior_LC22_DNp03$post_z, col = 'cyan', size= 10)
 
-Dorsal_LC22_syn_count_to_DNp03 = length(Dorsal_LC22_DNp03$updated_ids) # 5 synapses
-Ventral_LC22_syn_count_to_DNp03 = length(Ventral_LC22_DNp03$updated_ids) # 31 synapses
-Anterior_LC22_syn_count_to_DNp03 = length(Anterior_LC22_DNp03$updated_ids) # 94 synapses
-Posterior_LC22_syn_count_to_DNp03 = length(Posterior_LC22_DNp03$updated_ids) # 6 synapses
-
 # LPLC1 > DNp03
 points3d(Dorsal_LPLC1_DNp03$post_x, Dorsal_LPLC1_DNp03$post_y, Dorsal_LPLC1_DNp03$post_z, col = 'red', size= 10)
 points3d(Ventral_LPLC1_DNp03$post_x, Ventral_LPLC1_DNp03$post_y, Ventral_LPLC1_DNp03$post_z, col = 'blue', size= 10)
 points3d(Anterior_LPLC1_DNp03$post_x, Anterior_LPLC1_DNp03$post_y, Anterior_LPLC1_DNp03$post_z, col = 'purple', size= 10)
 points3d(Posterior_LPLC1_DNp03$post_x, Posterior_LPLC1_DNp03$post_y, Posterior_LPLC1_DNp03$post_z, col = 'cyan', size= 10)
-
-Dorsal_LPLC1_syn_count_to_DNp03 = length(Dorsal_LPLC1_DNp03$updated_ids) # 95 synapses
-Ventral_LPLC1_syn_count_to_DNp03 = length(Ventral_LPLC1_DNp03$updated_ids) # 304 synapses
-Anterior_LPLC1_syn_count_to_DNp03 = length(Anterior_LPLC1_DNp03$updated_ids) # 90 synapses
-Posterior_LPLC1_syn_count_to_DNp03 = length(Posterior_LPLC1_DNp03$updated_ids) # 183 synapses
-
-Dorsal_LPLC4_syn_count_to_DNp03 = length(Dorsal_LPLC4_DNp03$updated_ids) # 170 synapses
-Ventral_LPLC4_syn_count_to_DNp03 = length(Ventral_LPLC4_DNp03$updated_ids) # 197 synapses
-Anterior_LPLC4_syn_count_to_DNp03 = length(Anterior_LPLC4_DNp03$updated_ids) # 248 synapses
-Posterior_LPLC4_syn_count_to_DNp03 = length(Posterior_LPLC4_DNp03$updated_ids) # 188 synapses
 
 # LC4 > DNp04
 points3d(Dorsal_LC4_DNp04$post_x, Dorsal_LC4_DNp04$post_y, Dorsal_LC4_DNp04$post_z, col = 'red', size= 10)
@@ -395,21 +366,12 @@ points3d(Ventral_LC4_DNp04$post_x, Ventral_LC4_DNp04$post_y, Ventral_LC4_DNp04$p
 points3d(Anterior_LC4_DNp04$post_x, Anterior_LC4_DNp04$post_y, Anterior_LC4_DNp04$post_z, col = 'purple', size= 10)
 points3d(Posterior_LC4_DNp04$post_x, Posterior_LC4_DNp04$post_y, Posterior_LC4_DNp04$post_z, col = 'cyan', size= 10)
 
-Dorsal_LC4_syn_count_to_DNp04 = length(Dorsal_LC4_DNp04$updated_ids) # 166 synapses
-Ventral_LC4_syn_count_to_DNp04 = length(Ventral_LC4_DNp04$updated_ids) # 480 synapses
-Anterior_LC4_syn_count_to_DNp04 = length(Anterior_LC4_DNp04$updated_ids) # 353 synapses
-Posterior_LC4_syn_count_to_DNp04 = length(Posterior_LC4_DNp04$updated_ids) # 294 synapses
-
 # LPLC2 > DNp04
 points3d(Dorsal_LPLC2_DNp04$post_x, Dorsal_LPLC2_DNp04$post_y, Dorsal_LPLC2_DNp04$post_z, col = 'red', size= 10)
 points3d(Ventral_LPLC2_DNp04$post_x, Ventral_LPLC2_DNp04$post_y, Ventral_LPLC2_DNp04$post_z, col = 'blue', size= 10)
 points3d(Anterior_LPLC2_DNp04$post_x, Anterior_LPLC2_DNp04$post_y, Anterior_LPLC2_DNp04$post_z, col = 'purple', size= 10)
 points3d(Posterior_LPLC2_DNp04$post_x, Posterior_LPLC2_DNp04$post_y, Posterior_LPLC2_DNp04$post_z, col = 'cyan', size= 10)
 
-Dorsal_LPLC2_syn_count_to_DNp04 = length(Dorsal_LPLC2_DNp04$updated_ids) # 88 synapses
-Ventral_LPLC2_syn_count_to_DNp04 = length(Ventral_LPLC2_DNp04$updated_ids) # 77 synapses
-Anterior_LPLC2_syn_count_to_DNp04 = length(Anterior_LPLC2_DNp04$updated_ids) # 111 synapses
-Posterior_LPLC2_syn_count_to_DNp04 = length(Posterior_LPLC2_DNp04$updated_ids) # 49 synapses
 
 # LC4 > DNp06
 points3d(Dorsal_LC4_DNp06$post_x, Dorsal_LC4_DNp06$post_y, Dorsal_LC4_DNp06$post_z, col = 'red', size= 10)
@@ -417,21 +379,11 @@ points3d(Ventral_LC4_DNp06$post_x, Ventral_LC4_DNp06$post_y, Ventral_LC4_DNp06$p
 points3d(Anterior_LC4_DNp06$post_x, Anterior_LC4_DNp06$post_y, Anterior_LC4_DNp06$post_z, col = 'purple', size= 10)
 points3d(Posterior_LC4_DNp06$post_x, Posterior_LC4_DNp06$post_y, Posterior_LC4_DNp06$post_z, col = 'cyan', size= 10)
 
-Dorsal_LC4_syn_count_to_DNp06 = length(Dorsal_LC4_DNp06$updated_ids) # 11 synapses
-Ventral_LC4_syn_count_to_DNp06 = length(Ventral_LC4_DNp06$updated_ids) # 23 synapses
-Anterior_LC4_syn_count_to_DNp06 = length(Anterior_LC4_DNp06$updated_ids) # 19 synapses
-Posterior_LC4_syn_count_to_DNp06 = length(Posterior_LC4_DNp06$updated_ids) # 24 synapses
-
 # LC6 > DNp06
 points3d(Dorsal_LC6_DNp06$post_x, Dorsal_LC6_DNp06$post_y, Dorsal_LC6_DNp06$post_z, col = 'red', size= 10)
 points3d(Ventral_LC6_DNp06$post_x, Ventral_LC6_DNp06$post_y, Ventral_LC6_DNp06$post_z, col = 'blue', size= 10)
 points3d(Anterior_LC6_DNp06$post_x, Anterior_LC6_DNp06$post_y, Anterior_LC6_DNp06$post_z, col = 'purple', size= 10)
 points3d(Posterior_LC6_DNp06$post_x, Posterior_LC6_DNp06$post_y, Posterior_LC6_DNp06$post_z, col = 'cyan', size= 10)
-
-Dorsal_LC6_syn_count_to_DNp06 = length(Dorsal_LC6_DNp06$updated_ids) # 8 synapses
-Ventral_LC6_syn_count_to_DNp06 = length(Ventral_LC6_DNp06$updated_ids) # 8 synapses
-Anterior_LC6_syn_count_to_DNp06 = length(Anterior_LC6_DNp06$updated_ids) # 1 synapses
-Posterior_LC6_syn_count_to_DNp06 = length(Posterior_LC6_DNp06$updated_ids) # 14 synapses
 
 # LPLC1 > DNp06
 points3d(Dorsal_LPLC1_DNp06$post_x, Dorsal_LPLC1_DNp06$post_y, Dorsal_LPLC1_DNp06$post_z, col = 'red', size= 10)
@@ -439,26 +391,24 @@ points3d(Ventral_LPLC1_DNp06$post_x, Ventral_LPLC1_DNp06$post_y, Ventral_LPLC1_D
 points3d(Anterior_LPLC1_DNp06$post_x, Anterior_LPLC1_DNp06$post_y, Anterior_LPLC1_DNp06$post_z, col = 'purple', size= 10)
 points3d(Posterior_LPLC1_DNp06$post_x, Posterior_LPLC1_DNp06$post_y, Posterior_LPLC1_DNp06$post_z, col = 'cyan', size= 10)
 
-Dorsal_LPLC1_syn_count_to_DNp06 = length(Dorsal_LPLC1_DNp06$updated_ids) # 47 synapses
-Ventral_LPLC1_syn_count_to_DNp06 = length(Ventral_LPLC1_DNp06$updated_ids) # 215 synapses
-Anterior_LPLC1_syn_count_to_DNp06 = length(Anterior_LPLC1_DNp06$updated_ids) # 50 synapses
-Posterior_LPLC1_syn_count_to_DNp06 = length(Posterior_LPLC1_DNp06$updated_ids) # 128 synapses
-
 # LPLC2 > DNp06
 points3d(Dorsal_LPLC2_DNp06$post_x, Dorsal_LPLC2_DNp06$post_y, Dorsal_LPLC2_DNp06$post_z, col = 'red', size= 10)
 points3d(Ventral_LPLC2_DNp06$post_x, Ventral_LPLC2_DNp06$post_y, Ventral_LPLC2_DNp06$post_z, col = 'blue', size= 10)
 points3d(Anterior_LPLC2_DNp06$post_x, Anterior_LPLC2_DNp06$post_y, Anterior_LPLC2_DNp06$post_z, col = 'purple', size= 10)
 points3d(Posterior_LPLC2_DNp06$post_x, Posterior_LPLC2_DNp06$post_y, Posterior_LPLC2_DNp06$post_z, col = 'cyan', size= 10)
 
-Dorsal_LPLC2_syn_count_to_DNp06 = length(Dorsal_LPLC2_DNp06$updated_ids) # 72 synapses
-Ventral_LPLC2_syn_count_to_DNp06 = length(Ventral_LPLC2_DNp06$updated_ids) # 130 synapses
-Anterior_LPLC2_syn_count_to_DNp06 = length(Anterior_LPLC2_DNp06$updated_ids) # 71 synapses
-Posterior_LPLC2_syn_count_to_DNp06 = length(Posterior_LPLC2_DNp06$updated_ids) # 59 synapses
 
 
 #(Figure 2B-F Left)
 
 #VPNs to DNs
+colnames(LC4_receptive_field)[1] <- "catmaid_id"
+colnames(LC6_receptive_field)[1] <- "catmaid_id"
+colnames(LC22_receptive_field)[1] <- "catmaid_id"
+colnames(LPLC1_receptive_field)[1] <- "catmaid_id"
+colnames(LPLC2_receptive_field)[1] <- "catmaid_id"
+colnames(LPLC4_receptive_field)[1] <- "catmaid_id"
+
 VPNs_to_DNp01 <- rbind(LC4_receptive_field, LPLC2_receptive_field)
 VPNs_to_DNp02 <- rbind(LC4_receptive_field)
 VPNs_to_DNp03 <- rbind(LC4_receptive_field, LPLC1_receptive_field, LPLC2_receptive_field, LPLC4_receptive_field, LC22_receptive_field)
@@ -487,16 +437,59 @@ DNp06_syn_fly_points <- DNp06_syn_fly_points[DNp06_syn_fly_points$type %in% VPNs
 #Plotting of VPN synapses with mesh data
 #Synapse location data has been converted to ums, hence dividing the mesh from nm units to um.
 plot3d(DNp01_mesh/1000, col='black')
-points3d(DNp01_syn_fly_points$post_x, DNp01_syn_fly_points$post_y, DNp01_syn_fly_points$post_z, col = DNp01_syn_fly_points$VPN_color, size= 6)
+points3d(DNp01_syn_fly_points$post_x, DNp01_syn_fly_points$post_y, DNp01_syn_fly_points$post_z, col = DNp01_syn_fly_points$VPN_color, size= 10)
 
 plot3d(DNp02_mesh/1000, col='black')
-points3d(DNp02_syn_fly_points$post_x, DNp02_syn_fly_points$post_y, DNp02_syn_fly_points$post_z, col = DNp02_syn_fly_points$VPN_color, size= 6)
+points3d(DNp02_syn_fly_points$post_x, DNp02_syn_fly_points$post_y, DNp02_syn_fly_points$post_z, col = DNp02_syn_fly_points$VPN_color, size= 10)
+
+DNp03_skel <-read.neuron("datafiles/morphologyData/DNp03_morphData/DNp03_um_model.swc")
 
 plot3d(DNp03_mesh/1000, col = 'black')
-points3d(DNp03_syn_fly_points$post_x, DNp03_syn_fly_points$post_y, DNp03_syn_fly_points$post_z, col = DNp03_syn_fly_points$VPN_color, size= 6)
+plot3d(DNp03_skel, col = 'black', WithNodes = FALSE, lwd = 3)
+points3d(DNp03_syn_fly_points$post_x, DNp03_syn_fly_points$post_y, DNp03_syn_fly_points$post_z, col = DNp03_syn_fly_points$VPN_color, size= 7)
 
 plot3d(DNp04_mesh/1000, col = 'black')
-points3d(DNp04_syn_fly_points$post_x, DNp04_syn_fly_points$post_y, DNp04_syn_fly_points$post_z, col = DNp04_syn_fly_points$VPN_color, size= 6)
+points3d(DNp04_syn_fly_points$post_x, DNp04_syn_fly_points$post_y, DNp04_syn_fly_points$post_z, col = DNp04_syn_fly_points$VPN_color, size= 10)
 
 plot3d(DNp06_mesh/1000, col = 'black')
-points3d(DNp06_syn_fly_points$post_x, DNp06_syn_fly_points$post_y, DNp06_syn_fly_points$post_z, col = DNp06_syn_fly_points$VPN_color, size= 6)
+points3d(DNp06_syn_fly_points$post_x, DNp06_syn_fly_points$post_y, DNp06_syn_fly_points$post_z, col = DNp06_syn_fly_points$VPN_color, size= 10)
+
+
+
+# Place scalebar near bottom-left-front corner with adjusted position
+scalebar_length <- 50
+margin <- 0.4  # x and y margin
+depth_fraction <- 1.2  # how far forward along Z (0 = back, 1 = front)
+
+xrange <- diff(bbox[1:2])
+yrange <- diff(bbox[3:4])
+zrange <- diff(bbox[5:6])
+
+# Starting point of the scalebar
+bar_start <- c(
+  bbox[1] + margin * xrange,
+  bbox[3] + margin * yrange,
+  bbox[5] + depth_fraction * zrange
+)
+
+# End point along x-axis
+bar_end <- bar_start + c(scalebar_length, 0, 0)
+
+# Draw the scalebar line
+segments3d(rbind(bar_start, bar_end), col = "black", lwd = 4)
+
+# Add text label centered above the line
+text3d(
+  x = mean(c(bar_start[1], bar_end[1])),
+  y = bar_start[2] + 0.02 * yrange,  # slight vertical offset
+  z = bar_start[3],
+  texts = paste0(scalebar_length, "um"),
+  col = "black",
+  cex = 1
+)
+
+
+
+#Saving fig image. 
+#Adjust view point and then save as png
+rgl.snapshot(filename = "LPLC2_quadratic_plane_mesh.png",fmt = "png")

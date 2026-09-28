@@ -1,4 +1,4 @@
-#Note to get the script to run will also need to load in the LC_startup code, which I have to also edit and update to contain only whats necessary
+#Note to get the script to run will also need to load in the LC_startup code
 
 #Script is specific to figure 3.
 
@@ -17,6 +17,8 @@ library(writexl)
 library(stringi)
 library(sp)
 library(fafbseg)
+library(concaveman)
+library(jsonlite)
 }
 
 #Select depending on the population being used
@@ -39,7 +41,7 @@ a = -0.6; b = 1; c = 1.3; d = -265000
 
 #If working with an VPN without dendrites in the lobula plate ONLY (Lc4, LC6 etc)
 
-{neu <- LC4
+{neu <- LC22
 
 for (j in 1:length(neu)) {
   tar <- neu[[j]]
@@ -71,34 +73,34 @@ neu_lo <- nlapply(neu, subset, function(x) pointsinside(x, msh))
 # need to use LO_msh for LPLCs and can use msh for just LCs, this below part stays commented out if only working with VPNs with no LP dendrites.
 #If working with LPLC4, use the quadratic plane for LPLC1. 
 
-#neu <- LPLC2
-#neu_lo <- LPLC2
+neu_lo <- LPLC2
+neu <- LPLC2
 
 #For populations with lp dendrites will use a LO_msh, to select only lobula dendrites
-#neu_lo <- nlapply(neu_lo, subset, function(x) pointsinside(x, LO_msh))
-#plot3d(neu_lo)
+neu_lo <- nlapply(neu_lo, subset, function(x) pointsinside(x, LO_msh))
+plot3d(neu_lo)
 
-#This below will select the points of the LPLC1 population with the above set transformations to remove parts of the tethers/axons and limit it to the lobula.
+#This below will select the points of the LPLC4 population with the above set transformations to remove parts of the tethers/axons and limit it to the lobula.
 #neu_lo <- LPLC1
 
 #From here you will select the points to calculate the quadratic plane. 
-#for (j in 1:length(neu_lo)) {
-#  tar <- neu_lo[[j]]
-#  xyz_ep <-  tar$d[tar$EndPoints, ] %>% xyzmatrix()
-#  xyz_bp = tar$d[tar$BranchPoints, ] %>% xyzmatrix()
-#  xyz_LO <- rbind(xyz_ep, xyz_bp) %>% 
-#    as_tibble() %>% 
-#    mutate(LO = a*X + b*Y + c*Z + d) %>%
-#    filter(LO > 0) %>%
-#    select(X,Y,Z)
-#  if (j == 1) {
-#    xyz_node <- xyz_LO
-#  } else {
-#    xyz_node <- bind_rows(xyz_node, xyz_LO)
-#  }
-#}
+for (j in 1:length(neu_lo)) {
+ tar <- neu_lo[[j]]
+ xyz_ep <-  tar$d[tar$EndPoints, ] %>% xyzmatrix()
+ xyz_bp = tar$d[tar$BranchPoints, ] %>% xyzmatrix()
+ xyz_LO <- rbind(xyz_ep, xyz_bp) %>%
+   as_tibble() %>%
+   mutate(LO = a*X + b*Y + c*Z + d) %>%
+   filter(LO > 0) %>%
+   select(X,Y,Z)
+ if (j == 1) {
+   xyz_node <- xyz_LO
+ } else {
+   xyz_node <- bind_rows(xyz_node, xyz_LO)
+ }
+}
 
-#xyz_node <- data.matrix(xyz_node)
+xyz_node <- data.matrix(xyz_node)
 
 ##Visualization of individual points
 #{plot3d(xyz_node)
@@ -131,6 +133,7 @@ xyz_layer <- xyz_lm[ii,] # pts
 
 #If working with LPLC4 then run below after calculating the LPLC1 quadratic plane, otherwise skip this.
 #neu_lo <- LPLC4
+#neu <- LPLC4
 
 #For populations with lp dendrites will use a LO_msh, to select only lobula dendrites
 #neu_lo <- nlapply(neu_lo, subset, function(x) pointsinside(x, LO_msh))
@@ -144,8 +147,8 @@ points3d(xyz_layer, color = "orange", alpha = 0.9, size = 2)
 # points3d(dend_v, size = 2, col = 'gray90')
 plot3d(neu[], col='gray80', soma = T, lwd=1, WithNodes = F)
 plot3d(neu_lo[], col='gray80', soma = T, lwd=1, WithNodes = F)
-plot3d(neu[[2]],  col= "red", lwd = 5, soma=T, WithNodes = F)
-plot3d(neu[[8]],  col= "blue", lwd = 5, soma=T, WithNodes = F)
+plot3d(neu[[12]],  col= "red", lwd = 5, soma=T, WithNodes = F)
+plot3d(neu[[4]],  col= "blue", lwd = 5, soma=T, WithNodes = F)
 plot3d(nlapply(TM5[1], subset, function(x) pointsinside(x, msh,rval='distance')>-0.6e4), col = 'magenta', lwd = 4) #TM5
 plot3d(nlapply(TM5[2], subset, function(x) pointsinside(x, msh,rval='distance')>-1.2e4), col = 'magenta', lwd = 4) 
 arrow3d(axis_ori, axis_ori + axis_lat, theta = pi/6,n = 4, col="green", type = "rotation")
@@ -156,25 +159,60 @@ rgl.viewpoint(fov=0,zoom=0.8,userMatrix=rotationMatrix(170/180*pi,1,0,0) %*% rot
 
 #Plotting of mesh and quadratic plane, same as above.
 #change the ids below loaded from the previous file to read and plot meshes
-VPN_ids = flywire_updateids(LC4_ids_mesh)
+VPN_ids = flywire_updateids(LPLC2_ids_mesh)
 VPN_mesh=read_cloudvolume_meshes(VPN_ids)
-# LC4_red = 23, blue = 4
-# LC6_red = 61, blue = 40
-# LC22_red = 26, blue = 18
-# LPLC1_red = 23, blue = 47
+# LC4_red = 31, blue = 44 <- mesh colors -> neu_lo LC4_red = 2, blue = 8
+# LC6_red = 6, blue = 3 <- mesh colors -> neu_lo LC6_red = 2, blue = 43
+# LC22_red = 21, blue = 22 <- mesh colors -> neu_lo LC22_red = 2, blue = 28
+# LPLC1_red = 62, blue = 3 <- mesh colors -> neu_lo LPLC1_red = 5, blue = 38
 # LPLC2_red = 1, blue = 8
-# LPLC4_red = 46, blue = 24
+# LPLC4_red = 41, blue = 40 <- mesh colors -> neu_lo LPLC4_red = 6, blue = 3
 
-plot3d(VPN_mesh[],  col= "red", lwd = 5, soma=T, WithNodes = F) 
-plot3d(VPN_mesh[],  col= "blue", lwd = 5, soma=T, WithNodes = F)
-plot3d(VPN_mesh[], col='gray80', soma = T, lwd=1, WithNodes = F)
-points3d(xyz_layer, color = "orange", alpha = 0.9, size = 2)
-plot3d(nlapply(TM5[1], subset, function(x) pointsinside(x, msh,rval='distance')>-0.6e4), col = 'magenta', lwd = 4) #TM5
-plot3d(nlapply(TM5[2], subset, function(x) pointsinside(x, msh,rval='distance')>-1.2e4), col = 'magenta', lwd = 4) 
+plot3d(VPN_mesh[106]/1000,  col= "red", lwd = 5, soma=T, WithNodes = F) 
+plot3d(VPN_mesh[96]/1000,  col= "blue", lwd = 5, soma=T, WithNodes = F)
+plot3d(VPN_mesh[]/1000, col='gray80', soma = T, lwd=1, WithNodes = F)
+points3d(xyz_layer/1000, color = "orange", alpha = 0.9, size = 2)
+plot3d(nlapply(TM5[1], subset, function(x) pointsinside(x, msh,rval='distance')>-0.6e4)/1000, col = 'magenta', lwd = 4) #TM5
+plot3d(nlapply(TM5[2], subset, function(x) pointsinside(x, msh,rval='distance')>-1.2e4)/1000, col = 'magenta', lwd = 4) 
 rgl.viewpoint(fov=0,zoom=0.8,userMatrix=rotationMatrix(170/180*pi,1,0,0) %*% rotationMatrix(30/180*pi,0,0,1) %*% rotationMatrix(-65/180*pi,0,1,0))
+bbox <- par3d("bbox")  # returns c(xmin, xmax, ymin, ymax, zmin, zmax)
+
+# Define scalebar length in µm
+scalebar_length <- 50
+
+# Place scalebar near bottom-left-front corner with a small margin
+margin <- 0.02  # 2% margin inside the bounding box
+xrange <- diff(bbox[1:2])
+yrange <- diff(bbox[3:4])
+zrange <- diff(bbox[5:6])
+
+# Starting point of the scalebar
+bar_start <- c(
+  bbox[1] + margin * xrange,
+  bbox[3] + margin * yrange,
+  bbox[5] + margin * zrange
+)
+
+# End point along x-axis
+bar_end <- bar_start + c(scalebar_length, 0, 0)
+
+# Draw the scalebar line
+segments3d(rbind(bar_start, bar_end), col = "black", lwd = 4)
+
+# Add text label centered above the line
+text3d(
+  x = mean(c(bar_start[1], bar_end[1])),
+  y = bar_start[2] + 0.02 * yrange,  # slight vertical offset
+  z = bar_start[3],
+  texts = paste0(scalebar_length, "um"),
+  col = "black",
+  cex = 1
+)
+
+
 
 #Saving fig image. 
-#rgl.snapshot(filename = "LPLC2_quadratic_plane_mesh.png",fmt = "png")
+rgl.snapshot(filename = "LPLC2_quadratic_plane_mesh.png",fmt = "png")
 
 
 
@@ -272,16 +310,24 @@ for (j in 1:length(ind_pj)){
 }
 
 
+# Compute concave hull (alpha-shape)
+hull <- concaveman(xy_layer_align)
+
+
+
 ### Plotting of the receptive field (Figure 3 middle) ###
 windows(record = F, width = 8, height = 8)
 # pdf(file = "LC4_2d.pdf", width = 8, height = 8,pointsize=12,family="Helvetica", useDingbats = F)
-plot(xy_layer_align, col="orange", cex = 1, pch = ".",
+plot(NA,
+     xlim = range(xy_layer_align[,1]),
      ylim = rev(range(xy_layer_align[,2])),
-     xlim = (range(xy_layer_align[,1])),
      asp = 1,
-     main = title("LC4 Receptive Field", cex=1.5, line=1),
-     xlab = "Anterior-Posterior Coordinates in µm ",
+     main = "LPLC2 Receptive Field",
+     xlab = "Anterior-Posterior Coordinates in µm",
      ylab = "Dorsal-Ventral Coordinates in µm")
+
+# Draw filled concave hull
+polygon(hull[,1], hull[,2], col = "orange", border = NA)
 for (j in 1:length(neu_lo)) {
 twig <- neu_lo[[j]]
 pp <- as.matrix(sweep(twig$d[,c("X","Y","Z")], 2, layer_pca$center)) %*% layer_pca$rotation
@@ -290,7 +336,7 @@ twig$d[,c("X","Y")] <- sweep(t(rot_2 %*% t(pp)), 2, c(x_med_new, y_eq_new))
 #plot(twig/1000,  col= col_com_2$colors[j], lwd = 2, soma=T, WithNodes = F, add = T)
 plot(twig,  col= "gray80", lwd = 2, soma=F, WithNodes = F, add = T)
 }
-twig <- neu_lo[[30]]
+twig <- neu_lo[[12]]
 pp <- as.matrix(sweep(twig$d[,c("X","Y","Z")], 2, layer_pca$center)) %*% layer_pca$rotation
 pp <- sweep(pp[,1:2], 2, STATS = c(x_med_new, y_eq_new))
 twig$d[,c("X","Y")] <- sweep(t(rot_2 %*% t(pp)), 2, c(x_med_new, y_eq_new))
@@ -306,6 +352,7 @@ points(matrix(xy_layer_align[grid_u,], ncol=2), pch = 18, col = 'magenta', cex =
 lines(c(50000,60000), c(-70000, -70000), col = 'black', lwd = 3)
 text(x = 55000, -65000, labels = "10 µm")
 points(matrix(unlist(xy_pj_com), ncol = 2, byrow = T), pch = 20, col = "black", cex = 1.5) 
+
 
 ## Setting up for transformation from lobula space to visual field
 xy_poly <- list()
@@ -333,6 +380,7 @@ poly_st <- st_polygon(list(data.matrix(grid_bdpt)))
 xy_ori <- c(0,0)
 R <- (ymax-ymin)*2
 xy_com <- list() # com of the projected LC4 dendrite in eye coord
+
 
 for (j in 1:length(xy_poly)) {
   pj_com <- xy_pj_com[[j]] %>% as.matrix()
@@ -434,11 +482,16 @@ windows(record = F, width = 8, height = 8)
 
 #Plotting of COMs of molliewide projection for looming stimulus estimation (Figure 3 right)
 {plot(bkgd_grid, cex = 0.6, pch='', xlim = c(-0.5, pi), ylim = c(-1.5,1.5))
-for (j in 1:length(xy_poly)) {
-  polygon(xy_poly[[j]][,c("xM","yM")], angle = j*2, lwd = 0.5)
-}
-polygon(xy_poly[[4]][,c("xM","yM")],col = 'blue', density =20, angle = j*2, lwd =1)
-polygon(xy_poly[[23]][,c("xM","yM")],col = 'red', density =20, angle = j*2, lwd =1)
+  for (j in 1:length(xy_poly)) {
+    polygon(
+      xy_poly[[j]][, c("xM", "yM")],
+      col = rgb(0.5, 0.5, 0.5, alpha = 0.10), # transparent gray fill
+      border = rgb(0, 0, 0, alpha = 0.4), lwd= 2
+    )
+  }
+polygon(xy_poly[[4]][, c("xM", "yM")], col = rgb(0, 0, 1, alpha = 0.5), border = rgb(0, 0, 0, alpha = 0.4), lwd= 2)
+  
+polygon(xy_poly[[12]][, c("xM", "yM")], col = rgb(1, 0, 0, alpha = 0.5),  border = rgb(0, 0, 0, alpha = 0.4), lwd= 2)
 
 lines(bkgd_mer, lwd = 2); lines(bkgd_mer_e, lwd =2, col = 'cyan'); lines(bkgd_mer_ee, lwd = 2);
 lines(bkgd_eq_half, lwd =2); lines(bkgd_eq_m45_half, lwd =2 ); lines(bkgd_eq_p45_half, lwd =2)
@@ -450,33 +503,87 @@ for (j in 1:length(xy_poly)) {
 }
 }
 
-######################################
-#Calculating the area of each polygon 
-plot(bkgd_grid, cex = 0.6, pch='', xlim = c(-0.5, pi), ylim = c(-1.5,1.5))
-polygon(xy_poly[[1]][,c("xM","yM")], angle = j*2, lwd = 0.5)
+#####################################
+#Exporting COM of VPN populations
+COMs = matrix(unlist(xy_pj_com)/1000, ncol = 2, byrow = T)
 
-VPN = c()
-for (j in 1:length(xy_poly)) {
-  polygon_coordinates <- xy_poly[[j]][, c("xM", "yM")]
-  polygon <- Polygon(polygon_coordinates)
+neuron_names <- lapply(LC22, function(x) x$NeuronName)
+
+# Print the list of neuron names
+print(neuron_names)
+
+neuron_names_vector <- as.numeric(unlist(neuron_names))
+
+# Create a dataframe
+df <- data.frame(DV_raw_um = COMs[, 2], AP_raw_um = COMs[, 1], LC22_ids = neuron_names_vector)
+df
+
+#converting catmaid IDs back to flywire 
+flywire_id <- list()
+catmaid_id <- list()
+for (id in LC22_ids) {
+  # Query Catmaid and retrieve neuron data
+  neu_data <- catmaid_query_by_name(id)
   
-  # Create a Spatial Polygons object with a single polygon
-  polygon <- Polygons(list(polygon), ID = "polygon1")
-  area = polygon@area
-  VPN <- c(VPN, area)
+  # Extract the skid
+  neu_skid <- neu_data$skid
+  neu_flywire_id <- neu_data$name
+  flywire_id <- c(flywire_id, neu_flywire_id)
+  catmaid_id <- c(catmaid_id, neu_skid)
 }
 
-#Create a box and whisker plot
-boxplot(VPN, main = "LC4 polygon normalized area", ylab = "Normalized Area", outline = TRUE, ylim = c(0, 1))
+flywire_id <- sapply(flywire_id, function(x) {
+  # Use regex to extract the number after "flywire: "
+  sub("flywire: ", "", x)
+})
+catmaid_id <- sapply(catmaid_id, function(x) {
+  # Use regex to extract the number after "flywire: "
+  sub("flywire: ", "", x)
+})
 
-points(jitter(rep(1, length(VPN)), amount = 0.15), VPN, col = "red", pch = 16)
 
-data <- data.frame(Area = VPN)
+df_ids <- data.frame(
+  flywire_id = flywire_id,
+  catmaid_id = catmaid_id
+)
 
-# Save the data frame to a CSV file
-write.csv(data, "boxplot_data_LC_area.csv", row.names = FALSE)
+merged_df <- merge(df, df_ids, by.x = "LC22_ids", by.y = "catmaid_id")
+if (length(xy_poly) == nrow(merged_df)) {
+  merged_df$polygon <- lapply(xy_poly, function(p) {
+    data.frame(xM = p[, "xM"], yM = p[, "yM"])
+  })
+} else {
+  warning("Polygon count does not match COM count — check order or length.")
+}
+# Attach xM/yM coordinates from xy_poly as "COM" column
+merged_df$COM <- lapply(xy_com, function(p) {
+  data.frame(xM = p[["xM"]], yM = p[["yM"]])
+})
 
-######################################
+# --- Inspect ---
+print(merged_df)
+
+
+normalize <- function(x) {
+  (x - min(x)) / (max(x) - min(x))
+}
+
+# Apply normalization and update column
+merged_df$DV_norm <- normalize(merged_df$DV_raw_um)
+merged_df$AP_norm <- normalize(merged_df$AP_raw_um)
+
+# Convert flywire_id to character and rename column
+merged_df$updated_ids <- as.character(merged_df$flywire_id)
+merged_df$flywire_id <- NULL  # remove old column
+
+# Optional: Reorder columns if needed
+merged_df <- merged_df[, c("LC22_ids", "DV_raw_um", "AP_raw_um", "DV_norm", "AP_norm", "updated_ids", "polygon","COM")]
+
+# Export to Excel
+#write_xlsx(merged_df, "LC6_receptive_field.xlsx")
+# Export to JSON
+write_json(merged_df, "LC22_receptive_field_with_polygons.json", pretty = TRUE)
+
 
 
 
