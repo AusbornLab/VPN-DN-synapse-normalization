@@ -8,6 +8,9 @@ import math
 import scipy.optimize as opt
 from tkinter import Tk
 import tkinter.filedialog as fd
+import seaborn as sns
+import pandas as pd
+from scipy.optimize import curve_fit
 
 
 
@@ -36,6 +39,7 @@ def loadEphysData(filename):
         arraySize = sum(1 for line in open(filename))
         timeArr = np.zeros([arraySize])
         voltageArr = np.zeros([arraySize])
+        STDArr = np.zeros([arraySize])
 
         for i, line in enumerate(f):
             line = line.strip()
@@ -43,10 +47,12 @@ def loadEphysData(filename):
             line_split = line.split(' ')
             time = line_split[0]
             voltage = line_split[1]
+            STD = line_split[2]
             timeArr[i] = time
             voltageArr[i] = voltage
+            STDArr[i] = STD
 
-    return timeArr, voltageArr
+    return timeArr, voltageArr, STDArr
 
 def change_Ra(ra=41.0265, electrodeSec=None, electrodeVal=None):
     for sec in h.allsec():
@@ -70,49 +76,6 @@ def change_memCap(memcap=1.3765, electrodeSec=None, electrodeVal=None):
         sec.cm = memcap
     if electrodeSec is not None:
         electrodeSec.cm = electrodeVal
-
-def runSim(sectionList_py, electrodeSec, somaSection, exp_tData=None, exp_vData=None, current=-0.04, erev=-72.5, continueRun=1200, injDur=1000):
-    stimobj = h.IClamp(somaSection(0.5))
-    stimobj.delay = 100
-    stimobj.dur = injDur
-    stimobj.amp = current
-    stimobj.i = 0
-    ampInjvect = h.Vector().record(stimobj._ref_i)
-
-    vInjVec = h.Vector()
-    tInjVec = h.Vector()
-    vInjVec.record(somaSection(0.5)._ref_v)
-    tInjVec.record(h._ref_t)
-
-    eInjVec = h.Vector()
-    eInjVec.record(electrodeSec(0.5)._ref_v)
-
-
-    h.finitialize(erev * mV)
-    h.continuerun(continueRun * ms)
-    aInj = ampInjvect.to_python()
-    vInj = vInjVec.to_python()
-    tInj = tInjVec.to_python()
-    vInj_np = np.array(vInj)
-    tInj_np = np.array(tInj)
-    eInjVec_np = np.array(eInjVec)
-    aInjVec_np = np.array(aInj)
-
-    #############################################################
-    ### plotting code for exp data vs sim data for given trial ###
-    #############################################################
-
-    #only plots if exp time and voltage data vectors are passed to the runSim function
-    if exp_tData is not None and exp_vData is not None:
-        fig = plt.plot(stimobj, vInj_np)
-        plt.plot(exp_tData*1000, exp_vData)
-        plt.plot(tInj_np+14500, vInj_np)
-        plt.xlabel('time (ms)')
-        plt.ylabel('mV')
-        plt.show()
-        h.stoprun
-
-    return tInj_np, vInj_np, eInjVec_np, aInjVec_np
 
 def initializeModel(morph_file, neuron_name, hasElectrode):
 
@@ -164,11 +127,11 @@ def initializeModel(morph_file, neuron_name, hasElectrode):
         else:
             dendList.append(sec)
 
-    i = 0
-    for sec in axonList:
-        if i == sizIndex:
-            sizSection = sec
-        i += 1
+    # i = 0
+    # for sec in axonList:
+    #     if i == sizIndex:
+    #         sizSection = sec
+    #     i += 1
         
     colorV.append(axonEnd)
 
@@ -214,9 +177,6 @@ def initializeModel(morph_file, neuron_name, hasElectrode):
         change_gLeak()
         change_memCap()
         erev=-72.5
-
-   
-    nsegDiscretization(allSections_py)
     
     return cell, allSections_py, allSections_nrn, somaSection, sizSection, axonEnd, erev, axonList, tetherList, dendList, electrodeSec#, shape_window
 
@@ -248,13 +208,19 @@ def createAxon(axonEnd, pySectionList, neuron_name=None):
     # TODO: ADD OTHERS
     if neuron_name == "DNp01":
         equivCylHeight = 241.69
-        equivCylDiam = 3.32*2
+        equivCylDiam = 3.32
+    elif neuron_name == "DNp01_hemi":
+        equivCylHeight = 441.69
+        equivCylDiam = 3.63
     elif neuron_name == "DNp02":
         equivCylHeight = 220.654
         equivCylDiam = 0.624*2
     elif neuron_name == "DNp03":
         equivCylHeight = 175.671
         equivCylDiam = 0.251*4
+    elif neuron_name == "DNp03_hemi":
+        equivCylHeight = 375.671
+        equivCylDiam = 1.3
     elif neuron_name == "DNp04":
         #according to Namiki paper, DNp04 axon looks to be as long as DNp01 and as thick as DNp03, so we
         #use the DNp01 height variable and the DNp03 diam variable to create the approximate axon
@@ -284,6 +250,8 @@ def createAxon(axonEnd, pySectionList, neuron_name=None):
     return pySectionList
 
 def nsegDiscretization(sectionListToDiscretize):
+    # d_lambda = 0.1  # fraction of lambda
+    # frequency = 100  # Hz
     for sec in sectionListToDiscretize:
         secDensityMechDict = sec.psection()['density_mechs']
         secLambda = math.sqrt( ( (1 / secDensityMechDict['pas']['g'][0]) * sec.diam) / (4*sec.Ra) )
@@ -293,138 +261,103 @@ def nsegDiscretization(sectionListToDiscretize):
             if numSeg % 2 == 0:
                 numSeg += 1
             sec.nseg = numSeg
+    # for sec in sectionListToDiscretize:
+    #     secDensityMechDict = sec.psection()['density_mechs']
+    #     c_m = secDensityMechDict.get('pas', {}).get('e', [0.8])[0] if 'cm' in dir(sec) else 0.8
+    #     c_m = sec.cm  # Use the section's cm directly
+    #     r_a = sec.Ra
+    #     diameter = sec.diam
+    #     length = sec.L
+        
+    #     lambda_f = 1e5 * math.sqrt(diameter / (4 * math.pi * frequency * c_m * r_a))
+    #     ncomp = int((length / (d_lambda * lambda_f) + 0.9) / 2) * 2 + 1
+    #     sec.nseg = ncomp
     return
-
-def extractData(exp_timeData, exp_voltageData, sim_timeData, sim_voltageData):
-
-    EXP_INJ_START = 10000/1000
-    EXP_INJ_END = 11000/1000
-
-    exp_durInj_idx = np.where(np.logical_and(exp_timeData >= EXP_INJ_START, exp_timeData <= (EXP_INJ_END+(200/1000))))
-    exp_durInj_timeData = exp_timeData[exp_durInj_idx]
-    exp_durInj_voltageData = exp_voltageData[exp_durInj_idx]
-
-    SIM_INJ_START = 100
-    SIM_INJ_END = 1200
-
-    sim_durInj_idx = np.where(np.logical_and(sim_timeData >= SIM_INJ_START, sim_timeData <= (SIM_INJ_END+0.0)))
-    sim_durInj_timeData = sim_timeData[sim_durInj_idx]
-    sim_durInj_voltageData = sim_voltageData[sim_durInj_idx]
-    sim_durInj_timeData = sim_durInj_timeData
-
-    RS_sim_durInj_timeData = sim_durInj_timeData[0::2]
-    RS_sim_durInj_voltageData = sim_durInj_voltageData[0::2]
-
-    print(RS_sim_durInj_timeData.shape)
-
-    return [((exp_durInj_timeData-10)*1000)[0:1000], exp_durInj_voltageData[0:1000]], [(RS_sim_durInj_timeData-100)[0:1000], RS_sim_durInj_voltageData[0:1000]],[((exp_durInj_timeData-9.9)*1000)[-4000:-3000], exp_durInj_voltageData[-4000:-3000]], [(RS_sim_durInj_timeData)[-2000:-1000], RS_sim_durInj_voltageData[-2000:-1000]]
-
-def func_decay(x, a, tau_d, c):
-     return a * np.exp(-x / tau_d) + c
-
-def func_recovery(x, a, tau_r, c):
-     return -a * np.exp(-x / tau_r) + c
-
-def calcTau_decay(time, voltage, t, v):
-    optimizedParameters, pcov = opt.curve_fit(func_decay, time, voltage)
-    plt.plot(time, func_decay(time, *optimizedParameters), 'r-', label="fit")
-    plt.plot(time, voltage, "b-", label="Data")
-    plt.plot(t, v, 'g-')
-    plt.axvline(x=time[0]+0.25, color='k')
-    plt.xlim([time[0], time[0]+10])
-    plt.xlabel('Time (ms)')
-    plt.ylabel('Votlage (mV)')
-    plt.legend(['curve fit to simulated trace', 'simulated trace', 'experimental data','cutoff (0.25 ms)'])
-    plt.title("DNp03 decay")
-    plt.show()
-    tau_d = optimizedParameters[1]
-    return tau_d
-
-def calcTau_recovery(time, voltage, t, v):
-    optimizedParameters, pcov = opt.curve_fit(func_recovery, time-time[0], voltage)
-    plt.plot(time, func_recovery(time-time[0], *optimizedParameters), 'r-', label="fit")
-    plt.plot(time, voltage, "b-", label="Data")
-    plt.plot(t, v, 'g-')
-    plt.axvline(x=time[0]+0.25, color='k')
-    plt.xlim([time[0], time[0]+10])
-    plt.xlabel('Time (ms)')
-    plt.ylabel('Votlage (mV)')
-    plt.legend(['curve fit to simulated trace', 'simulated trace', 'experimental data','cutoff (0.25 ms)'])
-    plt.title('DNp03 recovery')
-    plt.show()
-    tau_r = optimizedParameters[1]
-    return tau_r
 
 def calculateRMSE_justDecay(exp_timeData, exp_voltageData, sim_timeData, sim_voltageData):
 
-    EXP_INJ_START = 10000/1000
-    EXP_INJ_END = 11000/1000
+    # First RMSE window: 248 ms to 252 ms
+    start_ms = 250.2
+    end_ms = 253
 
-    exp_durInj_idx = np.where(np.logical_and(exp_timeData >= EXP_INJ_START, exp_timeData <= (EXP_INJ_END+(200/1000))))
-    exp_durInj_timeData = exp_timeData[exp_durInj_idx]
-    exp_durInj_voltageData = exp_voltageData[exp_durInj_idx]
+    # Second RMSE window: 248 ms to 257 ms (adds 5 ms)
+    end_ms_extended = 257
 
-    SIM_INJ_START = 100
-    SIM_INJ_END = 500
+    # --- First window ---
+    exp_mask = (exp_timeData >= start_ms) & (exp_timeData <= end_ms)
+    sim_mask = (sim_timeData >= start_ms) & (sim_timeData <= end_ms)
 
-    sim_durInj_idx = np.where(np.logical_and(sim_timeData >= SIM_INJ_START, sim_timeData <= (SIM_INJ_END+0.0)))
-    
-    sim_durInj_timeData = sim_timeData[sim_durInj_idx]
-    sim_durInj_voltageData = sim_voltageData[sim_durInj_idx]
-    sim_durInj_timeData = sim_durInj_timeData
+    exp_voltage_window = exp_voltageData[exp_mask]
+    sim_voltage_window = sim_voltageData[sim_mask][::2]  # downsample
 
-    RS_sim_durInj_timeData = sim_durInj_timeData[0::2]
-    RS_sim_durInj_voltageData = sim_durInj_voltageData[0::2]
+    min_len = min(len(exp_voltage_window), len(sim_voltage_window))
+    RMSE_val = np.sqrt(np.mean((exp_voltage_window[:min_len] - sim_voltage_window[:min_len]) ** 2))
 
-    
-    RMSE_val = np.sqrt(np.mean((exp_durInj_voltageData[(0+3):150] - RS_sim_durInj_voltageData[(0+3):150]) ** 2))
-    RMSE_val_100 = np.sqrt(np.mean((exp_durInj_voltageData[(0+3):100] - RS_sim_durInj_voltageData[(0+3):100]) ** 2))
+    # --- Second window ---
+    exp_mask_ext = (exp_timeData >= start_ms) & (exp_timeData <= end_ms_extended)
+    sim_mask_ext = (sim_timeData >= start_ms) & (sim_timeData <= end_ms_extended)
 
+    exp_voltage_window_ext = exp_voltageData[exp_mask_ext]
+    sim_voltage_window_ext = sim_voltageData[sim_mask_ext][::2]  # downsample
 
+    min_len_ext = min(len(exp_voltage_window_ext), len(sim_voltage_window_ext))
+    RMSE_val_extended = np.sqrt(np.mean((exp_voltage_window_ext[:min_len_ext] - sim_voltage_window_ext[:min_len_ext]) ** 2))
+
+    # Plotting
     plt.figure()
-    plt.plot(((exp_durInj_timeData-9.9)*1000)[3:100], exp_durInj_voltageData[3:100], 'k')
-    plt.plot((RS_sim_durInj_timeData)[3:100], RS_sim_durInj_voltageData[3:100], 'g')
-    plt.plot(((exp_durInj_timeData-9.9)*1000)[100:150], exp_durInj_voltageData[100:150], 'k--')
-    plt.plot((RS_sim_durInj_timeData)[100:150], RS_sim_durInj_voltageData[100:150], 'g--')
+    plt.plot(exp_timeData[exp_mask], exp_voltage_window, 'k', label=f'Experimental ({start_ms}-{end_ms} ms)')
+    plt.plot(sim_timeData[sim_mask][::2][:min_len], sim_voltage_window[:min_len], 'g', label=f'Simulation ({start_ms}-{end_ms} ms)')
+    plt.plot(exp_timeData[exp_mask_ext], exp_voltage_window_ext, 'k--', label='Experimental (248–257)')
+    plt.plot(sim_timeData[sim_mask_ext][::2][:min_len_ext], sim_voltage_window_ext[:min_len_ext], 'g--', label=f'Simulation {start_ms}-{end_ms_extended} ms)')
+    plt.xlabel("Time (ms)")
+    plt.ylabel("Voltage")
+    plt.title(f"Voltage Comparison: RMSE for {start_ms}- {end_ms} ms and {start_ms}-{end_ms_extended} ms")
+    plt.legend()
+    # plt.show()
 
-    plt.show()
-    return RMSE_val, RMSE_val_100
+    return RMSE_val, RMSE_val_extended
 
 def calculateRMSE_justRecovery(exp_timeData, exp_voltageData, sim_timeData, sim_voltageData):
-    EXP_INJ_START = 10000/1000
-    EXP_INJ_END = 11000/1000
 
-    exp_durInj_idx = np.where(np.logical_and(exp_timeData >= EXP_INJ_START, exp_timeData <= (EXP_INJ_END+(200/1000))))
-    exp_durInj_timeData = exp_timeData[exp_durInj_idx]
-    exp_durInj_voltageData = exp_voltageData[exp_durInj_idx]
+    # Define recovery window
+    start_ms = 300.2
+    end_ms = 303
+    end_ms_extended = 305  # extended by 5 ms
 
-    SIM_INJ_START = 100
-    SIM_INJ_END = 1200
+    # --- First window: 297–300 ms ---
+    exp_mask = (exp_timeData >= start_ms) & (exp_timeData <= end_ms)
+    sim_mask = (sim_timeData >= start_ms) & (sim_timeData <= end_ms)
 
-    sim_durInj_idx = np.where(np.logical_and(sim_timeData >= SIM_INJ_START, sim_timeData <= (SIM_INJ_END+000)))
-    sim_durInj_timeData = sim_timeData[sim_durInj_idx]
-    sim_durInj_voltageData = sim_voltageData[sim_durInj_idx]
-    sim_durInj_timeData = sim_durInj_timeData
+    exp_voltage_window = exp_voltageData[exp_mask]
+    sim_voltage_window = sim_voltageData[sim_mask][::2]  # downsample
 
-    RS_sim_durInj_timeData = sim_durInj_timeData[0::2]
-    RS_sim_durInj_voltageData = sim_durInj_voltageData[0::2]
+    min_len = min(len(exp_voltage_window), len(sim_voltage_window))
+    RMSE_val = np.sqrt(np.mean((exp_voltage_window[:min_len] - sim_voltage_window[:min_len]) ** 2))
 
+    # --- Second window: 297–305 ms ---
+    exp_mask_ext = (exp_timeData >= start_ms) & (exp_timeData <= end_ms_extended)
+    sim_mask_ext = (sim_timeData >= start_ms) & (sim_timeData <= end_ms_extended)
 
+    exp_voltage_window_ext = exp_voltageData[exp_mask_ext]
+    sim_voltage_window_ext = sim_voltageData[sim_mask_ext][::2]  # downsample
 
-    RMSE_val = np.sqrt(np.mean((exp_durInj_voltageData[(-4000+3):-3850] - RS_sim_durInj_voltageData[(-2000+3):-1850]) ** 2))
-    RMSE_val_100 = np.sqrt(np.mean((exp_durInj_voltageData[(-4000+3):-3900] - RS_sim_durInj_voltageData[(-2000+3):-1900]) ** 2))
+    min_len_ext = min(len(exp_voltage_window_ext), len(sim_voltage_window_ext))
+    RMSE_val_extended = np.sqrt(np.mean((exp_voltage_window_ext[:min_len_ext] - sim_voltage_window_ext[:min_len_ext]) ** 2))
 
-
+    # Plotting
     plt.figure()
-    plt.plot(((exp_durInj_timeData-9.9)*1000)[-4000:-3900], exp_durInj_voltageData[-4000:-3900], 'k')
-    plt.plot(((exp_durInj_timeData-9.9)*1000)[-3900:-3850], exp_durInj_voltageData[-3900:-3850], 'k--')
-    plt.plot((RS_sim_durInj_timeData)[-2000:-1900], RS_sim_durInj_voltageData[-2000:-1900], 'g')
-    plt.plot((RS_sim_durInj_timeData)[-1900:-1850], RS_sim_durInj_voltageData[-1900:-1850], 'g--')
+    plt.plot(exp_timeData[exp_mask], exp_voltage_window, 'k', label='Exp (297–300)')
+    plt.plot(sim_timeData[sim_mask][::2][:min_len], sim_voltage_window[:min_len], 'g', label='Sim (297–300)')
+    plt.plot(exp_timeData[exp_mask_ext], exp_voltage_window_ext, 'k--', label='Exp (297–305)')
+    plt.plot(sim_timeData[sim_mask_ext][::2][:min_len_ext], sim_voltage_window_ext[:min_len_ext], 'g--', label='Sim (297–305)')
 
-    plt.show()
+    plt.xlabel("Time (ms)")
+    plt.ylabel("Voltage")
+    plt.title("Recovery Phase RMSE")
+    plt.legend()
+    # plt.show()
 
-    return RMSE_val, RMSE_val_100
-
+    return RMSE_val, RMSE_val_extended
 
 def plotMorphColorCode_wSIZ(allSections_py, somaSection, axonList, tetherList, dendList, sizSection, neuron_name):
     morph_shape_window = h.Shape()#h.SectionList(allSections_py))           # Create a shape plot
@@ -455,13 +388,330 @@ def plotMorphColorCode_wSIZ(allSections_py, somaSection, axonList, tetherList, d
   
     return morph_shape_window
 
+def apply_liquid_junction_correction(expData, ljp_correction_mV):
+    """
+    Applies liquid junction potential correction to the experimental voltage data.
+
+    Parameters:
+        expData (list): A list containing [timeArray, voltageArray]
+        ljp_correction_mV (float): The LJP correction value in millivolts (to subtract)
+
+    Returns:
+        corrected_time (np.array): Unchanged time array
+        corrected_voltage (np.array): Voltage array after LJP correction
+    """
+    time_array, voltage_array = expData
+
+    # Apply LJP correction
+    corrected_voltage = voltage_array - ljp_correction_mV
+
+    return time_array, corrected_voltage
+
+def normalized_rmse(rmse, signal):
+    return 100 * rmse / np.ptp(signal)  # percent RMSE relative to signal range
+
+def analyze_experimental_properties(neuron_name):
+    # Select path based on neuron
+    if neuron_name == "DNp01":
+        path = "ephysData/DNp01_ephysData/DNp01_flies1_2-4-8_avg_traces.csv"
+        current = -0.06 #nA
+    elif neuron_name == "DNp03":
+        path = "ephysData/DNp03_ephysData/DNp03_flies1-8_avg_traces.csv"
+        current = -0.002 #nA
+    else:
+        raise ValueError(f"Unknown neuron_name: {neuron_name}")
+
+    # Load data
+    df = pd.read_csv(path)
+    time = df["Time"].values
+    fly_columns = [col for col in df.columns if col != "Time"]
+
+    # --- Injection parameters (set according to your protocol) ---
+    delay = 250       # ms, current step onset
+    injDur = 50      # ms, duration of injection
+    stim_amp = current  # nA, injected current amplitude (adjust to match your stimobj.amp)
+
+    results = {"Fly": [], "RestVm": [], "Rin": [], "Tau": [], "Ctotal": []}
+
+    # Analyze each fly trace
+    for fly in fly_columns:
+        exp_vData = df[fly].values
+
+        # Baseline before current injection
+        baseline_window = (time > (delay - 250)) & (time < delay)
+        baseline = exp_vData[baseline_window].mean()
+
+        # Steady state during injection (midpoint ± 12.5 ms)
+        mid_start = delay + (injDur / 2) - 12.5
+        mid_end   = delay + (injDur / 2) + 12.5
+        ss_window = (time > mid_start) & (time < mid_end)
+        steady_state = exp_vData[ss_window].mean()
+
+        deltaV = steady_state - baseline  # mV
+        deltaI = stim_amp                 # nA
+        Rin = deltaV / deltaI if deltaI != 0 else np.nan  # MΩ
+
+        # Fit exponential to tau during injection phase
+        rise_window = (time > 250) & (time < 260)
+        t_rise = time[rise_window] - delay   # subtract delay to align with injection onset
+        v_rise = exp_vData[rise_window]
+
+        try:
+            popt, _ = curve_fit(exp_decay, t_rise, v_rise, p0=[deltaV, 20, baseline])
+            tau = popt[1]  # ms
+        except RuntimeError:
+            tau = np.nan
+
+        # Capacitance (pF) from tau / Rin
+        C_total = tau / Rin * 1000 if (not np.isnan(tau) and Rin != 0) else np.nan
+
+        # Store results
+        results["Fly"].append(fly)
+        results["RestVm"].append(baseline-13) # adjust for LJP of 13 mV
+        results["Rin"].append(Rin)
+        results["Tau"].append(tau)
+        results["Ctotal"].append(C_total)
+
+        print(f"{neuron_name} {fly}: Vm={baseline:.2f} mV, Rin={Rin:.2f} MΩ, tau={tau:.2f} ms, C={C_total:.2f} pF")
+
+    # --- Convert to DataFrame ---
+    res_df = pd.DataFrame(results)
+
+    # --- Plot scatter + box for each property ---
+    fig, axes = plt.subplots(1, 4, figsize=(16, 4))
+
+    props = [("RestVm", "Resting Vm (mV)"),
+             ("Rin", "Input Resistance (MΩ)"),
+             ("Tau", "Tau (ms)"),
+             ("Ctotal", "Capacitance (pF)")]
+
+    for ax, (prop, label) in zip(axes, props):
+        data = res_df[prop].values
+        # Add horizontal jitter
+        x_jitter = 1 + 0.3 * (np.random.rand(len(data)) - 0.5)  # ±0.025 jitter
+        ax.scatter(x_jitter, data, c='k', edgecolors='none', s=50, alpha=0.7)
+        ax.boxplot(data, positions=[1], widths=0.3, showfliers=False)
+        ax.set_title(label)
+        ax.set_xticks([])
+        ax.grid(True, linestyle="--", alpha=0.5)
+
+    fig.suptitle(f"Experimental properties: {neuron_name}", fontsize=14)
+    plt.tight_layout()
+    plt.show()
+
+    return res_df
+
+def plot_with_std(ax, t, v, std, color='black', label=None):
+                if std is not None and len(std) == len(v):
+                    ax.fill_between(t, v - std, v + std, color='gray', alpha=0.4, edgecolor='none')
+                ax.plot(t, v, color=color, label=label)
+                
+def exp_decay(t, A, tau, C):
+    return A * np.exp(-t / tau) + C
+
+def runSim(sectionList_py, electrodeSec, somaSection, 
+           exp_tData=None, exp_vData=None, STD=None, 
+           current=-0.04, erev=-72.5, continueRun=1200, injDur=1000, delay=100):
+
+    stimobj = h.IClamp(somaSection(0.5))
+    stimobj.delay = delay
+    stimobj.dur = injDur
+    stimobj.amp = current
+
+    ampInjvect = h.Vector().record(stimobj._ref_i)
+    vInjVec = h.Vector().record(somaSection(0.5)._ref_v)
+    tInjVec = h.Vector().record(h._ref_t)
+    eInjVec = h.Vector().record(electrodeSec(0.5)._ref_v)
+
+    h.finitialize(erev)
+    h.continuerun(continueRun)
+
+    # Convert to numpy arrays
+    aInjVec_np = np.array(ampInjvect)
+    vInj_np = np.array(vInjVec)
+    tInj_np = np.array(tInjVec)
+    eInjVec_np = np.array(eInjVec)
+
+    # --- Simulation measurements ---
+    baseline_window = (tInj_np > (delay - 100)) & (tInj_np < delay)
+    baseline = vInj_np[baseline_window].mean()
+
+    mid_start = delay + (injDur / 2) - 12.5
+    mid_end   = delay + (injDur / 2) + 12.5
+    ss_window = (tInj_np > mid_start) & (tInj_np < mid_end)
+    steady_state = vInj_np[ss_window].mean()
+
+    deltaV = steady_state - baseline  # mV
+    deltaI = stimobj.amp              # nA
+    Rin = deltaV / deltaI             # MΩ
+
+    # Estimate tau
+    rise_window = (tInj_np > 250) & (tInj_np < 260)
+    t_rise = tInj_np[rise_window] - delay
+    v_rise = vInj_np[rise_window]
+
+    try:
+        popt, _ = curve_fit(exp_decay, t_rise, v_rise, p0=[deltaV, 20, baseline])
+        tau = popt[1]
+    except RuntimeError:
+        tau = np.nan
+
+    C_total = tau / Rin * 1000 if not np.isnan(tau) else np.nan
+    print(f"Simulation: Rin_MOhm: {Rin:.3f}, tau_ms: {tau:.3f}, C_total_pF: {C_total:.3f}")
+
+    #############################################################
+    ### plotting + RMSE calculation if exp data is provided #####
+    #############################################################
+    if exp_tData is not None and exp_vData is not None:
+        rmse_decay, rmse_decay_ext = calculateRMSE_justDecay(exp_tData, exp_vData, tInj_np, eInjVec_np)
+        rmse_recovery, rmse_recovery_ext = calculateRMSE_justRecovery(exp_tData, exp_vData, tInj_np, eInjVec_np)
+
+        fig = plt.figure(figsize=(15, 7))
+        gs = gridspec.GridSpec(3, 3, height_ratios=[0.4, 0.5, 0.1])
+
+        def plot_with_std(ax, t, v, std, color='black', label=None):
+            if std is not None and len(std) == len(v):
+                ax.fill_between(t, v - std, v + std, color='gray', alpha=0.4, edgecolor='none')
+            ax.plot(t, v, color=color, label=label)
+        # --- Downsample simulation to match experimental points if needed ---
+        factor = len(tInj_np) // len(exp_vData)
+        if factor > 1:
+            tInj_np = tInj_np[::factor]
+            vInj_np = vInj_np[::factor]
+            eInjVec_np = eInjVec_np[::factor]
+            aInjVec_np = aInjVec_np[::factor]
+
+        # Trim if off by one sample
+        if len(tInj_np) > len(exp_vData):
+            tInj_np   = tInj_np[:len(exp_vData)]
+            vInj_np   = vInj_np[:len(exp_vData)]
+            eInjVec_np = eInjVec_np[:len(exp_vData)]
+            aInjVec_np = aInjVec_np[:len(exp_vData)]
+        elif len(exp_vData) > len(tInj_np):
+            exp_vData = exp_vData[:len(tInj_np)]
+            if STD is not None:
+                STD = STD[:len(tInj_np)]
+        baseline_window = (tInj_np > (delay - 100)) & (tInj_np < delay)
+        baseline = exp_vData[baseline_window].mean()
+
+        mid_start = delay + (injDur / 2) - 12.5
+        mid_end   = delay + (injDur / 2) + 12.5
+        ss_window = (tInj_np > mid_start) & (tInj_np < mid_end)
+        steady_state = exp_vData[ss_window].mean()
+
+        deltaV = steady_state - baseline  # mV
+        deltaI = stimobj.amp              # nA
+        Rin = deltaV / deltaI
+
+        rise_window = (tInj_np > 250) & (tInj_np < 260)
+        t_rise = tInj_np[rise_window] - delay
+        v_rise = exp_vData[rise_window]
+
+        try:
+            popt, _ = curve_fit(exp_decay, t_rise, v_rise, p0=[deltaV, 20, baseline])
+            tau = popt[1]
+        except RuntimeError:
+            tau = np.nan
+
+        C_total = tau / Rin * 1000 if not np.isnan(tau) else np.nan
+        print(f"Experimental: Rin_MOhm: {Rin:.3f}, tau_ms: {tau:.3f}, C_total_pF: {C_total:.3f}")
+
+        # Full trace
+        ax1 = fig.add_subplot(gs[0:2, 0])
+        plot_with_std(ax1, exp_tData, exp_vData, STD, color='black', label='Experimental')
+        ax1.plot(tInj_np, eInjVec_np, color='red', label='Simulated')
+        ax1.set_title('Full Voltage Trace')
+        ax1.set_ylabel('mV')
+        ax1.legend()
+        ax1.tick_params(labelbottom=False)
+        ax1.set_xlim(220, 320)
+        # ax1.set_ylim(-72, -71.2)
+
+        # Current injection
+        ax2 = fig.add_subplot(gs[2, 0])
+        ax2.plot(tInj_np, aInjVec_np, color='blue')
+        ax2.set_title('Injected Current')
+        ax2.set_xlabel('Time (ms)')
+        ax2.set_ylabel('nA')
+        ax2.set_xlim(220, 320)
+
+        # Decay region
+        ax3 = fig.add_subplot(gs[:, 1])
+        decay_start, decay_end, decay_ext_end = 250.2, 253, 257
+
+        # Main decay
+        mask_exp = (exp_tData >= decay_start) & (exp_tData <= decay_end)
+        mask_sim = (tInj_np >= decay_start) & (tInj_np <= decay_end)
+        plot_with_std(ax3, exp_tData[mask_exp], exp_vData[mask_exp],
+                      STD[mask_exp] if STD is not None else None, color='black')
+        ax3.plot(tInj_np[mask_sim], eInjVec_np[mask_sim], color='red')
+
+        mask_exp_ext = (exp_tData > decay_end) & (exp_tData <= decay_ext_end)
+        mask_sim_ext = (tInj_np > decay_end) & (tInj_np <= decay_ext_end)
+        # Extended decay
+        mask_exp_ext = (exp_tData > decay_end) & (exp_tData <= decay_ext_end)
+        if STD is not None and len(STD) == len(exp_vData):
+            ax3.fill_between(
+                exp_tData[mask_exp_ext],
+                exp_vData[mask_exp_ext] - STD[mask_exp_ext],
+                exp_vData[mask_exp_ext] + STD[mask_exp_ext],
+                color='gray', alpha=0.4, edgecolor='none'
+            )
+        # Plot lines
+        ax3.plot(exp_tData[mask_exp_ext], exp_vData[mask_exp_ext], color='black')
+        ax3.plot(tInj_np[mask_sim_ext], eInjVec_np[mask_sim_ext], color='red')
+
+        ax3.set_xlim(decay_start, decay_ext_end)
+        ax3.set_title(f'Decay Region\nRMSE = {rmse_decay:.3f}, Ext = {rmse_decay_ext:.3f}')
+        ax3.set_xlabel('Time (ms)')
+        ax3.set_ylabel('mV')
+
+        # Recovery region
+        ax4 = fig.add_subplot(gs[:, 2])
+        recovery_start, recovery_end, recovery_ext_end = 300.2, 303, 305
+
+        # Main recovery
+        mask_exp = (exp_tData >= recovery_start) & (exp_tData <= recovery_end)
+        mask_sim = (tInj_np >= recovery_start) & (tInj_np <= recovery_end)
+        plot_with_std(ax4, exp_tData[mask_exp], exp_vData[mask_exp],
+                      STD[mask_exp] if STD is not None else None, color='black')
+        ax4.plot(tInj_np[mask_sim], eInjVec_np[mask_sim], color='red')
+
+        # Extended recovery
+        mask_exp_ext = (exp_tData > recovery_end) & (exp_tData <= recovery_ext_end)
+        mask_sim_ext = (tInj_np > recovery_end) & (tInj_np <= recovery_ext_end)
+        if STD is not None and len(STD) == len(exp_vData):
+            ax4.fill_between(
+                exp_tData[mask_exp_ext],
+                exp_vData[mask_exp_ext] - STD[mask_exp_ext],
+                exp_vData[mask_exp_ext] + STD[mask_exp_ext],
+                color='gray', alpha=0.4, edgecolor='none'
+            )
+
+        # Plot lines
+        ax4.plot(exp_tData[mask_exp_ext], exp_vData[mask_exp_ext], color='black')
+        ax4.plot(tInj_np[mask_sim_ext], eInjVec_np[mask_sim_ext], color='red')
+
+        ax4.set_xlim(recovery_start, recovery_ext_end)
+        ax4.set_title(f'Recovery Region\nRMSE = {rmse_recovery:.3f}, Ext = {rmse_recovery_ext:.3f}')
+        ax4.set_xlabel('Time (ms)')
+        ax4.set_ylabel('mV')
+
+        plt.tight_layout()
+        plt.show()
+
+    return tInj_np, vInj_np, eInjVec_np, aInjVec_np
 
 
 def main():
     hasElectrode=True
-    neuron_name = "DNp01"
+    neuron_name = "DNp03" # 
+
+    # analyze_experimental_properties(neuron_name) # Analyze experimental properties for the given neuron
+
+    fly_num = "avg" #DNp03 fly 3 and 5, DNp01 fly 4 and 6, 
     Tk().withdraw()
-    fd_title = "Select morphology file to use for synapse mapping"
+    fd_title = "Select morphology file to use for passive property fitting"
     morph_file = fd.askopenfilename(filetypes=[("swc file", "*.swc"), ("hoc file","*.hoc")], initialdir=r"morphologyData", title=fd_title)
 
     # morph_file = 'datafiles/morphologyData/' + neuron_name + '_morphData/' + neuron_name + '_um_model.swc'
@@ -471,32 +721,107 @@ def main():
     msw = plotMorphColorCode_wSIZ(allSections_py, somaSection, axonList, tetherList, dendList, sizSection, neuron_name)
 
     timestr = clock.strftime("%Y%m%d-%H%M%S")
-    if neuron_name == "DNp01":
-        DNp01_fly1thru6_60pA_hpol_noHold_timeArray, DNp01_fly1thru6_60pA_hpol_noHold_voltageArray = loadEphysData('ephysData/DNp01_hp_withoutBiasCurrent_avg_fly1thru6_BRIDGE_FIXED.dat')
-        DNp01_fly1thru6_60pA_hpol_noHold_timeArray = DNp01_fly1thru6_60pA_hpol_noHold_timeArray - 0.00025
-        expData = [[DNp01_fly1thru6_60pA_hpol_noHold_timeArray, DNp01_fly1thru6_60pA_hpol_noHold_voltageArray]]
+    if neuron_name in ["DNp01", "DNp01_hemi"]:
+        if fly_num == "4":
+            DNp01_fly1thru6_60pA_hpol_noHold_timeArray, DNp01_fly1thru6_60pA_hpol_noHold_voltageArray, STD = loadEphysData('ephysData/DNp01_ephysData/DNp01_avg_trace_fly4.dat') # higher rmp
+        elif fly_num == "6":
+            DNp01_fly1thru6_60pA_hpol_noHold_timeArray, DNp01_fly1thru6_60pA_hpol_noHold_voltageArray, STD = loadEphysData('ephysData/DNp01_ephysData/DNp01_avg_trace_fly6.dat')# lower rmp
+        elif fly_num == "avg":
+            DNp01_fly1thru6_60pA_hpol_noHold_timeArray, DNp01_fly1thru6_60pA_hpol_noHold_voltageArray, STD = loadEphysData('ephysData/DNp01_ephysData/DNp01_avg_trace_flies1_2-4-8.dat')
+        expData = [DNp01_fly1thru6_60pA_hpol_noHold_timeArray, DNp01_fly1thru6_60pA_hpol_noHold_voltageArray]
+        ljp = 13  # from gouwen and wilson 2009
+        corrected_time, corrected_voltage = apply_liquid_junction_correction(expData, ljp)
+        expData = [corrected_time, corrected_voltage]
 
-    elif neuron_name == "DNp03":
-        DNp03_fly4567_2pA_hpol_noHold_timeArray, DNp03_fly4567_2pA_hpol_noHold_voltageArray = loadEphysData('ephysData/DNp03_7423_hp_withoutBiasCurrent_avg_fly457.dat')
-        expData = [[DNp03_fly4567_2pA_hpol_noHold_timeArray, DNp03_fly4567_2pA_hpol_noHold_voltageArray]]
+    elif neuron_name in ["DNp03", "DNp03_hemi"]:
+        if fly_num == "2":
+            DNp03_fly4567_2pA_hpol_noHold_timeArray, DNp03_fly4567_2pA_hpol_noHold_voltageArray, STD = loadEphysData('ephysData/DNp03_ephysData/DNp03_avg_trace_fly2.dat')# higher rmp
+        elif fly_num == "6": 
+            DNp03_fly4567_2pA_hpol_noHold_timeArray, DNp03_fly4567_2pA_hpol_noHold_voltageArray, STD = loadEphysData('ephysData/DNp03_ephysData/DNp03_avg_trace_fly6.dat') # lower rmp
+        elif fly_num == "avg":
+            DNp03_fly4567_2pA_hpol_noHold_timeArray, DNp03_fly4567_2pA_hpol_noHold_voltageArray, STD = loadEphysData('ephysData/DNp03_ephysData/DNp03_avg_trace_flies1-8.dat')
+        expData = [DNp03_fly4567_2pA_hpol_noHold_timeArray, DNp03_fly4567_2pA_hpol_noHold_voltageArray]
+        ljp = 13  # from gouwen and wilson 2009
+        corrected_time, corrected_voltage = apply_liquid_junction_correction(expData, ljp)
+        expData = [corrected_time, corrected_voltage]
 
-    for trialSet in expData:
-        exp_erev = round(np.mean(trialSet[1][0:5000]), 2)
-        exp_erev = -66.4
-        trialSet.append(exp_erev)
-    
 
-    if neuron_name == "DNp01": 
-        erev = -66.4298 - 0.2
-        raVal = 212
-        gleakVal = 1/2300
-        cmVal = 0.7
-
-    elif neuron_name == "DNp03":
+    #new passive properties, after liquid junction potential correction, avg trace 
+    if neuron_name == "DNp01" and fly_num == "avg": 
+        #avg trace, flies 1,2,4-8
+        initial = -76.75
+        erev = -77.5
+        raVal = 250
+        gleakVal = 1/2675
+        cmVal = 0.8
+    elif neuron_name == "DNp01" and fly_num == "5":
+        initial = -66.3
+        erev = -66.94
+        raVal = 300
+        gleakVal =  1/3275
+        cmVal = 0.79
+    elif neuron_name == "DNp01" and fly_num == "3":
+        initial = -87.3
+        erev = -88.05
+        raVal = 250
+        gleakVal = 1/2820
+        cmVal = 0.50
+    elif neuron_name == "DNp01_hemi" and fly_num == "avg": 
+        initial = -76.75
+        erev = -77.5
+        raVal = 190
+        gleakVal = 1/1900
+        cmVal = 0.85
+    elif neuron_name == "DNp01_hemi" and fly_num == "5": 
+        initial = -66.3
+        erev = -66.95
+        raVal = 220
+        gleakVal =  1/2375
+        cmVal = 0.85
+    elif neuron_name == "DNp01_hemi" and fly_num == "3": 
+        initial = -87.2
+        erev = -88.05
+        raVal = 210
+        gleakVal =  1/1875
+        cmVal = 0.55
+    elif neuron_name == "DNp03" and fly_num == "avg":
+        #avg trace, flies 1-8
+        initial = -71.35
+        raVal = 55
+        gleakVal = 1/2725
+        cmVal = 1.1
+        erev = -73.71
+    elif neuron_name == "DNp03" and fly_num == "2":
+        initial = -68.4
         raVal = 50
         gleakVal = 1/3150
         cmVal = 0.8
-        erev = -61.15
+        erev = -70.70
+    elif neuron_name == "DNp03" and fly_num == "6":
+        initial = -73.15
+        raVal = 30
+        gleakVal = 1/2700
+        cmVal = 2
+        erev = -74.8
+    elif neuron_name == "DNp03_hemi" and fly_num == "avg":
+        #avg trace, flies 1-8
+        initial = -71.35
+        raVal = 320
+        gleakVal = 1/3755
+        cmVal = 0.7
+        erev = -73.73
+    elif neuron_name == "DNp03_hemi" and fly_num == "2":
+        initial = -67.75
+        raVal = 350
+        gleakVal = 1/3550
+        cmVal = 0.7
+        erev = -70.75
+    elif neuron_name == "DNp03_hemi" and fly_num == "6":
+        initial = -73.25
+        raVal = 120
+        gleakVal = 1/4500
+        cmVal = 1.1
+        erev = -74.85
 
     elec_raVal = 235.6                     
     elec_gleakVal = 0
@@ -504,106 +829,23 @@ def main():
     #electode geom props: l = 10um | d = 1um
 
     sealCon_8GOhm = 0.0003978
-    sealCon_2GOhm = 0.0016
     elec_gleakVal = sealCon_8GOhm
 
 
     change_Ra(ra=raVal, electrodeSec=electrodeSec, electrodeVal = elec_raVal)
     change_gLeak(gleak=gleakVal, erev=erev, electrodeSec=electrodeSec, electrodeVal = elec_gleakVal)
     change_memCap(memcap=cmVal, electrodeSec=electrodeSec, electrodeVal = elec_cmVal)
+    nsegDiscretization(allSections_py)
 
-
-    if neuron_name == "DNp01":
-        current = -0.06
-    elif neuron_name == "DNp03":
-        current = -0.002
+    if neuron_name in ["DNp01", "DNp01_hemi"]:
+        current = -0.06 #60 pA 
+    elif neuron_name in ["DNp03", "DNp03_hemi"]:
+        current = -0.002 # 2pA
     else:
         print("set current value")
         quit(0)
-
-    #records from the soma section to fit
-    # tInj_np_hpol_DecayRecov, vInj_np_hpol_DecayRecov = runSim(allSections_py, somaSection, exp_tData=None, exp_vData=None, current=-0.002, erev = expData[0][2], continueRun=1200)#-60)#current=-0.0333, erev = -58.75)
     
-    #records from the electode section for fitting.
-    tInj_np_hpol_justDecay, vInj_np_hpol_justDecay, eInj_np_hpol_justDecay, aInjVec_np_hpol_current = runSim(allSections_py, electrodeSec, somaSection, exp_tData=None, exp_vData=None, current=current, erev = -66.55  , continueRun=1200)
+    #records from the electode section for fitting, Figure 6:
+    tInj_np_hpol_justDecay, vInj_np_hpol_justDecay, eInj_np_hpol_justDecay, aInjVec_np_hpol_current = runSim(allSections_py, electrodeSec, somaSection, exp_tData=expData[0], exp_vData=expData[1], STD= STD, current=current, erev = initial, continueRun=550, injDur=50,  delay = 250)
     
-
-
-
-    ERROR_decay, ERR_decay_100 = calculateRMSE_justDecay(expData[0][0], expData[0][1], tInj_np_hpol_justDecay, vInj_np_hpol_justDecay)
-    if (np.isinf(ERROR_decay)): 
-            return float('inf'),
-    ERROR_recov, ERR_recov_100 = calculateRMSE_justRecovery(expData[0][0], expData[0][1], tInj_np_hpol_justDecay, vInj_np_hpol_justDecay)
-    if (np.isinf(ERROR_recov)): 
-            return float('inf'),
-
-    print(ERROR_decay, ERROR_recov, ERROR_decay+ERROR_recov)
-    print(ERR_decay_100, ERR_recov_100, ERR_decay_100+ERR_recov_100)
-
-    errVal = ERROR_decay+ERROR_recov
-    print(errVal)
-
-    ERROR_decay_elec, ERR_decay_100_elec = calculateRMSE_justDecay(expData[0][0], expData[0][1], tInj_np_hpol_justDecay, eInj_np_hpol_justDecay)
-    if (np.isinf(ERROR_decay_elec)): 
-            return float('inf'),
-    ERROR_recov_elec, ERR_recov_100_elec = calculateRMSE_justRecovery(expData[0][0], expData[0][1], tInj_np_hpol_justDecay, eInj_np_hpol_justDecay)
-    if (np.isinf(ERROR_recov_elec)): 
-            return float('inf'),
-
-    print(ERROR_decay_elec, ERROR_recov_elec, ERROR_decay_elec+ERROR_recov_elec)
-    print(ERR_decay_100_elec, ERR_recov_100_elec, ERR_decay_100_elec+ERR_recov_100_elec)
-
-    errVal_elec = ERROR_decay_elec+ERROR_recov_elec
-    print(errVal_elec)
-    
-    gs = gridspec.GridSpec(3, 2)
-    fig_DR = plt.figure()
-
-    ax_full = fig_DR.add_subplot(gs[0, :]) # row 1, span all columns
-    ax_decay = fig_DR.add_subplot(gs[1, :])
-    ax_recov = fig_DR.add_subplot(gs[2, :])
-    if neuron_name == "DNp01":
-        # plt.plot(tInj_np_hpol_justDecay, aInjVec_np_hpol_current)
-        ax_full.plot(DNp01_fly1thru6_60pA_hpol_noHold_timeArray, DNp01_fly1thru6_60pA_hpol_noHold_voltageArray)
-        ax_full.plot((tInj_np_hpol_justDecay/1000)+9.9, eInj_np_hpol_justDecay)
-        ax_full.plot((tInj_np_hpol_justDecay/1000)+9.9, vInj_np_hpol_justDecay)
-        ax_decay.plot(DNp01_fly1thru6_60pA_hpol_noHold_timeArray, DNp01_fly1thru6_60pA_hpol_noHold_voltageArray)
-        ax_decay.plot((tInj_np_hpol_justDecay/1000)+9.9, eInj_np_hpol_justDecay)
-        ax_decay.plot((tInj_np_hpol_justDecay/1000)+9.9, vInj_np_hpol_justDecay)
-        ax_recov.plot(DNp01_fly1thru6_60pA_hpol_noHold_timeArray, DNp01_fly1thru6_60pA_hpol_noHold_voltageArray)
-        ax_recov.plot((tInj_np_hpol_justDecay/1000)+9.9, eInj_np_hpol_justDecay)
-        ax_recov.plot((tInj_np_hpol_justDecay/1000)+9.9, vInj_np_hpol_justDecay)
-    elif neuron_name == "DNp03":
-        # plt.plot(tInj_np_hpol_justDecay, aInjVec_np_hpol_current)
-        ax_full.plot(DNp03_fly4567_2pA_hpol_noHold_timeArray, DNp03_fly4567_2pA_hpol_noHold_voltageArray)
-        ax_full.plot((tInj_np_hpol_justDecay/1000)+9.9, eInj_np_hpol_justDecay)
-        ax_decay.plot(DNp03_fly4567_2pA_hpol_noHold_timeArray, DNp03_fly4567_2pA_hpol_noHold_voltageArray)
-        ax_decay.plot((tInj_np_hpol_justDecay/1000)+9.9, eInj_np_hpol_justDecay)
-        ax_recov.plot(DNp03_fly4567_2pA_hpol_noHold_timeArray, DNp03_fly4567_2pA_hpol_noHold_voltageArray)
-        ax_recov.plot((tInj_np_hpol_justDecay/1000)+9.9, eInj_np_hpol_justDecay)
-
-    TEST = ((tInj_np_hpol_justDecay/1000))[150]
-
-    ax_full.spines['top'].set_visible(False)
-    ax_full.spines['right'].set_visible(False)
-    ax_decay.spines['top'].set_visible(False)
-    ax_decay.spines['right'].set_visible(False)
-    ax_recov.spines['top'].set_visible(False)
-    ax_recov.spines['right'].set_visible(False)
-
-    ax_full.set_title(f'Simulated vs Experimental {neuron_name} Trace (Hyperpolarization)')
-
-    ax_full.set_xlim(9.75, 11.25)
-    ax_decay.set_xlim(9.975, 10.025)
-    ax_recov.set_xlim(10.975, 11.025)
-
-    ax_full.set_ylabel('Voltage (mV)')
-    ax_full.set_xlabel('Time (ms)')
-
-    plt.suptitle('Optimization of {} (ra={}, gleak={}, cm={}, electrode={}, elec_erev=0, elec_gleak={}, elec_ra={}, elec_cm={}, err={})'.format(neuron_name, round(raVal, 3), round(gleakVal, 6), round(cmVal, 3), hasElectrode, elec_gleakVal, elec_raVal, elec_cmVal, errVal))
-    plt.tight_layout()
-
-   # plt.savefig('DNp01_finalPassiveProp.svgz', format='svgz')
-    plt.show()
-
 main()
