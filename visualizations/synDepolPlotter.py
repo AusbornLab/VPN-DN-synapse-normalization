@@ -5615,85 +5615,6 @@ def plot_partner_close_all_combined(
 
     return all_data, levene_df
 
-def run_levene_test(csv_path):
-    """
-    Reads the CSV exported by plot_partner_close_all_combined_V11
-    and runs pairwise Levene’s tests between all groups
-    to check for equality of variances.
-
-    Outputs significance stars and pairwise group comparisons.
-
-    Star notation:
-        *    p < 0.05
-        **   p < 0.01
-        ***  p < 0.001
-        **** p < 0.0001
-        ns   p >= 0.05
-    """
-    import pandas as pd
-    from scipy.stats import levene
-    from itertools import combinations
-
-    df = pd.read_csv(csv_path)
-
-    # Ensure required columns
-    if "Group" not in df.columns or "Value" not in df.columns:
-        print("❌ CSV must contain 'Group' and 'Value' columns.")
-        return
-
-    # --- Define helper for star notation ---
-    def p_to_stars(p):
-        if p < 0.0001:
-            return "****"
-        elif p < 0.001:
-            return "***"
-        elif p < 0.01:
-            return "**"
-        elif p < 0.05:
-            return "*"
-        else:
-            return "ns"
-
-    groups = df["Group"].unique()
-    results = []
-
-    # --- Run pairwise Levene tests between all groups ---
-    for g1, g2 in combinations(groups, 2):
-        vals1 = df[df["Group"] == g1]["Value"].dropna()
-        vals2 = df[df["Group"] == g2]["Value"].dropna()
-        if len(vals1) > 1 and len(vals2) > 1:
-            stat, p = levene(vals1, vals2)
-            results.append({
-                "Group1": g1,
-                "Group2": g2,
-                "Levene_Stat": stat,
-                "p_value": p,
-                "stars": p_to_stars(p)
-            })
-
-    results_df = pd.DataFrame(results)
-    if results_df.empty:
-        print("⚠️ No valid group comparisons found.")
-        return results_df
-
-    # --- Print summary ---
-    print("\n=== Pairwise Levene’s Tests for Equality of Variances ===")
-    for _, row in results_df.iterrows():
-        print(f"{row['Group1']} vs {row['Group2']}: "
-              f"{row['stars']} (p={row['p_value']:.4g}, stat={row['Levene_Stat']:.3f})")
-
-    # --- Print significant only ---
-    sig_df = results_df[results_df['stars'] != 'ns']
-    if not sig_df.empty:
-        print("\n=== Significant Differences (p < 0.05) ===")
-        for _, row in sig_df.iterrows():
-            print(f"{row['Group1']} vs {row['Group2']}: "
-                  f"{row['stars']} (p={row['p_value']:.4g})")
-    else:
-        print("\n✅ No significant variance differences between any groups.")
-
-    return results_df
-
 def print_significant_levene(csv_file):
     """
     Reads a CSV of Levene test results and prints:
@@ -6622,8 +6543,8 @@ def main():
     # plot_partner_close_all_combined(neuron_name, export_csv=True, csv_path=None) #this is the final version for the paper
 
     #stats
-    # run_levene_test(f"datafiles/simulationData/{neuron_name}_final_sims/{neuron_name}_PeakDepolNorm.csv")
-    # print_significant_levene(f"datafiles/simulationData/{neuron_name}_final_sims/{neuron_name}_PeakDepolNorm.csv")
+    # run_levene_test(f"datafiles/simulationData/{neuron_name}_final_sims/{neuron_name}_Levene_results.csv")
+    # print_significant_levene(f"datafiles/simulationData/{neuron_name}_final_sims/{neuron_name}_Levene_results.csv")
 
 
     #### Additional code removed from main analysis: for review purposes only
