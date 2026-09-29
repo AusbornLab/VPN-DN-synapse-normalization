@@ -4,7 +4,7 @@ This repository accompanys "Morphology and synapse topography optimize linear en
 
 [![DOI](https://zenodo.org/badge/791283579.svg)](https://doi.org/10.5281/zenodo.22663333)
 
-It contains all code necessary for the modeling pipeline, skeletonizing DNs, modeling their synaptic activations, mapping receptive fields of VPNs, and investigating retinotopy. 
+It contains all code necessary for the modeling pipeline, skeletonizing DNs, modeling their synaptic activations, mapping receptive fields of VPNs, and investigating retinotopy. Simulations were run through the windows subsytem for linux (WSL), Ubuntu 22.04, in order to use CoreNEURON speeding up simulations. 
 
 Scripts are written in R, matlab and python, and require changing between languages for  processing of data, the outline and order of files is outlined below.
 The packages and appropriate versions for each package is located in the packages file. 
